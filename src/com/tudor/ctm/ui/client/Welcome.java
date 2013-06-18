@@ -7,10 +7,14 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -78,42 +82,11 @@ public class Welcome implements EntryPoint {
 	}
 	
 	ClickHandler btnAddThing_onClick = new ClickHandler() {
-		
 		@Override
 		public void onClick(ClickEvent event) {
-
-			TextArea ta = new TextArea();
-			TextBox tb = new TextBox();
-			DateBox db = new DateBox();
-			VerticalPanel vp = new VerticalPanel();
-			DecoratorPanel decPanel = new DecoratorPanel();
-			
-			ta.setValue(taskDescription.getValue());
-			tb.setValue(taskTitle.getValue());
-			
-			DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
-			db.setFormat(new DateBox.DefaultFormat(dateFormat));
-			db.setValue(dateBox.getValue());
-			
-			vp.add(tb);
-			vp.add(ta);
-			vp.add(db);
-			
-			DisclosurePanel advancedDisclosure = new DisclosurePanel(tb.getText());
-						
-			decPanel.add(vp);
-			
-			advancedDisclosure.setAnimationEnabled(true);
-		    advancedDisclosure.setContent(decPanel);
-		    advancedDisclosure.setWidth("60em");
-		    
-		    vPanel.insert(advancedDisclosure, 0);
-		    
+			//showLoading();
 		    addTask(taskTitle.getValue(), taskDescription.getValue(), dateBox.getValue(), "ttabacel@ea.com");
-			
 		}
-
-		
 	};
 	
 	private void addTask(String taskTitle, String taskDescription, Date taskDueDate,
@@ -122,15 +95,78 @@ public class Welcome implements EntryPoint {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				//hideLoading();
+				alertWidget(caught.getMessage(), caught.getStackTrace().toString());
 			}
 
 			@Override
 			public void onSuccess(CloudTask result) {
-				// TODO Auto-generated method stub
-				
+				//hideLoading();
+				showAddedTask(result);
 			}
+			
 		});
+	}
+	
+	private void showAddedTask(CloudTask result){
+		TextArea ta = new TextArea();
+		TextBox tb = new TextBox();
+		DateBox db = new DateBox();
+		Button btnSalveaza = new Button("Salveaza");
+		VerticalPanel vp = new VerticalPanel();
+		DecoratorPanel decPanel = new DecoratorPanel();
+		
+		ta.setValue(result.getTaskDescription());
+		tb.setValue(result.getTaskTitle());
+		
+		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
+		db.setFormat(new DateBox.DefaultFormat(dateFormat));
+		db.setValue(result.getTaskDueDate());
+		
+		vp.add(tb);
+		vp.add(ta);
+		vp.add(db);
+		vp.add(btnSalveaza);
+		
+		DisclosurePanel advancedDisclosure = new DisclosurePanel(tb.getText());
+					
+		decPanel.add(vp);
+		
+		advancedDisclosure.setAnimationEnabled(true);
+	    advancedDisclosure.setContent(decPanel);
+	    advancedDisclosure.setWidth("60em");
+	    
+	    vPanel.insert(advancedDisclosure, 0);
+	}
+	
+	public static DialogBox alertWidget(final String header, final String content) {
+        final DialogBox box = new DialogBox();
+        final VerticalPanel panel = new VerticalPanel();
+        box.setText(header);
+        panel.add(new Label(content));
+        final Button buttonClose = new Button("Close",new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                box.hide();
+            }
+        });
+        // few empty labels to make widget larger
+        final Label emptyLabel = new Label("");
+        emptyLabel.setSize("auto","25px");
+        panel.add(emptyLabel);
+        panel.add(emptyLabel);
+        buttonClose.setWidth("90px");
+        panel.add(buttonClose);
+        panel.setCellHorizontalAlignment(buttonClose, HasAlignment.ALIGN_RIGHT);
+        box.add(panel);
+        return box;
+    }
+	
+	private void showLoading(){
+		DOM.setStyleAttribute(RootPanel.get("loading").getElement(), "display", "block");
+	}
+	
+	private void hideLoading(){
+		DOM.setStyleAttribute(RootPanel.get("loading").getElement(), "display", "none");
 	}
 }

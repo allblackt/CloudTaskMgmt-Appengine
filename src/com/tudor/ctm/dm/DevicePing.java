@@ -3,6 +3,7 @@ package com.tudor.ctm.dm;
 import com.google.android.gcm.server.*;
 
 import com.tudor.ctm.dm.DeviceInfo;
+import com.tudor.ctm.endpoint.DeviceInfoEndpoint;
 
 import java.io.IOException;
 
@@ -52,7 +53,7 @@ public class DevicePing {
    */
   public static void pingAllDevices(String message) throws IOException {
     Sender sender = new Sender(API_KEY);
-    for (DeviceInfo deviceInfo : endpoint.listDeviceInfo()) {
+    for (DeviceInfo deviceInfo : endpoint.listDeviceInfo(null, null).getItems()) {
       doSendViaGcm(message, sender, deviceInfo);
     }
   }

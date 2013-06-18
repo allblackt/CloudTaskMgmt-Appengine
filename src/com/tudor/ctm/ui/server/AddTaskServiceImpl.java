@@ -3,6 +3,7 @@ package com.tudor.ctm.ui.server;
 import java.util.Date;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.tudor.ctm.endpoint.CloudTaskEndpoint;
 import com.tudor.ctm.ui.client.AddTaskService;
 import com.tudor.ctm.ui.shared.CTMException;
 import com.tudor.ctm.ui.shared.CTMUser;
@@ -19,14 +20,17 @@ public class AddTaskServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public CloudTask addTask(String taskTitle, String taskDescription,
 			Date taskDueDate, String ownerEmail) throws CTMException {
-		// TODO Auto-generated method stub
 		CTMUser owner = new CTMUser();
 		owner.setEmail(ownerEmail);
-		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, owner);
+		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, ownerEmail);
 		
 		System.out.println(ct.toString());
 		
-		return null;
+		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
+		
+		endpoint.insertCloudTask(ct);
+		
+		return ct;
 	}
 
 }

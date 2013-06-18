@@ -23,34 +23,17 @@
     "type" : "no-cache",
     "maxAge" : 0
   },
+  "ownerDomain" : "tudor.com",
+  "ownerName" : "tudor.com",
+  "packagePath" : "ctm.dm",
   "methods" : {
-    "deviceinfoendpoint.deviceInfoEndpoint.removeDeviceInfo" : {
-      "path" : "deviceinfo/{id}",
-      "httpMethod" : "DELETE",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.dm.DeviceInfoEndpoint.removeDeviceInfo",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "string",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "deviceinfoendpoint.deviceInfoEndpoint.insertDeviceInfo" : {
+    "deviceinfoendpoint.insertDeviceInfo" : {
       "path" : "deviceinfo",
       "httpMethod" : "POST",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.dm.DeviceInfoEndpoint.insertDeviceInfo",
+      "rosyMethod" : "com.tudor.ctm.endpoint.DeviceInfoEndpoint.insertDeviceInfo",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
@@ -59,27 +42,28 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "deviceinfoendpoint.deviceInfoEndpoint.listDeviceInfo" : {
+    "deviceinfoendpoint.updateDeviceInfo" : {
       "path" : "deviceinfo",
-      "httpMethod" : "GET",
+      "httpMethod" : "PUT",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.dm.DeviceInfoEndpoint.listDeviceInfo",
+      "rosyMethod" : "com.tudor.ctm.endpoint.DeviceInfoEndpoint.updateDeviceInfo",
       "request" : {
-        "body" : "empty"
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "deviceinfoendpoint.deviceInfoEndpoint.getDeviceInfo" : {
+    "deviceinfoendpoint.getDeviceInfo" : {
       "path" : "deviceinfo/{id}",
       "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.dm.DeviceInfoEndpoint.getDeviceInfo",
+      "rosyMethod" : "com.tudor.ctm.endpoint.DeviceInfoEndpoint.getDeviceInfo",
       "request" : {
         "parameters" : {
           "id" : {
@@ -93,16 +77,45 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "deviceinfoendpoint.deviceInfoEndpoint.updateDeviceInfo" : {
+    "deviceinfoendpoint.listDeviceInfo" : {
       "path" : "deviceinfo",
-      "httpMethod" : "PUT",
+      "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.dm.DeviceInfoEndpoint.updateDeviceInfo",
+      "rosyMethod" : "com.tudor.ctm.endpoint.DeviceInfoEndpoint.listDeviceInfo",
       "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "deviceinfoendpoint.removeDeviceInfo" : {
+      "path" : "deviceinfo/{id}",
+      "httpMethod" : "DELETE",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.DeviceInfoEndpoint.removeDeviceInfo",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -120,8 +133,8 @@
           }
         }
       },
-      "DeviceInfoCollection" : {
-        "id" : "DeviceInfoCollection",
+      "CollectionResponse_DeviceInfo" : {
+        "id" : "CollectionResponse_DeviceInfo",
         "type" : "object",
         "properties" : {
           "items" : {
@@ -129,17 +142,15 @@
             "items" : {
               "$ref" : "DeviceInfo"
             }
+          },
+          "nextPageToken" : {
+            "type" : "string"
           }
         }
       }
     },
     "methods" : {
-      "com.tudor.ctm.dm.DeviceInfoEndpoint.removeDeviceInfo" : {
-        "response" : {
-          "$ref" : "DeviceInfo"
-        }
-      },
-      "com.tudor.ctm.dm.DeviceInfoEndpoint.insertDeviceInfo" : {
+      "com.tudor.ctm.endpoint.DeviceInfoEndpoint.insertDeviceInfo" : {
         "request" : {
           "$ref" : "DeviceInfo"
         },
@@ -147,20 +158,25 @@
           "$ref" : "DeviceInfo"
         }
       },
-      "com.tudor.ctm.dm.DeviceInfoEndpoint.listDeviceInfo" : {
-        "response" : {
-          "$ref" : "DeviceInfoCollection"
-        }
-      },
-      "com.tudor.ctm.dm.DeviceInfoEndpoint.getDeviceInfo" : {
-        "response" : {
-          "$ref" : "DeviceInfo"
-        }
-      },
-      "com.tudor.ctm.dm.DeviceInfoEndpoint.updateDeviceInfo" : {
+      "com.tudor.ctm.endpoint.DeviceInfoEndpoint.updateDeviceInfo" : {
         "request" : {
           "$ref" : "DeviceInfo"
         },
+        "response" : {
+          "$ref" : "DeviceInfo"
+        }
+      },
+      "com.tudor.ctm.endpoint.DeviceInfoEndpoint.getDeviceInfo" : {
+        "response" : {
+          "$ref" : "DeviceInfo"
+        }
+      },
+      "com.tudor.ctm.endpoint.DeviceInfoEndpoint.listDeviceInfo" : {
+        "response" : {
+          "$ref" : "CollectionResponse_DeviceInfo"
+        }
+      },
+      "com.tudor.ctm.endpoint.DeviceInfoEndpoint.removeDeviceInfo" : {
         "response" : {
           "$ref" : "DeviceInfo"
         }

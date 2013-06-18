@@ -1,0 +1,243 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://ctm-tudor.appspot.com/_ah/api",
+  "name" : "cloudtaskendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://ctm-tudor.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "tudor.com",
+  "ownerName" : "tudor.com",
+  "packagePath" : "ctm.endpoint",
+  "methods" : {
+    "cloudtaskendpoint.updateCloudTask" : {
+      "path" : "cloudtask",
+      "httpMethod" : "PUT",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.updateCloudTask",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.listCloudTask" : {
+      "path" : "cloudtask",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.getCloudTask" : {
+      "path" : "cloudtask/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.removeCloudTask" : {
+      "path" : "cloudtask/{id}",
+      "httpMethod" : "DELETE",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.removeCloudTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.insertCloudTask" : {
+      "path" : "cloudtask",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.insertCloudTask",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "CloudTask" : {
+        "id" : "CloudTask",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "taskTitle" : {
+            "type" : "string"
+          },
+          "taskDescription" : {
+            "type" : "string"
+          },
+          "taskDueDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "owner" : {
+            "$ref" : "CTMUser"
+          }
+        }
+      },
+      "CTMUser" : {
+        "id" : "CTMUser",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "Key"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Key" : {
+        "id" : "Key",
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "appId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "Key"
+          },
+          "complete" : {
+            "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CollectionResponse_CloudTask" : {
+        "id" : "CollectionResponse_CloudTask",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudTask"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.updateCloudTask" : {
+        "request" : {
+          "$ref" : "CloudTask"
+        },
+        "response" : {
+          "$ref" : "CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask" : {
+        "response" : {
+          "$ref" : "CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.removeCloudTask" : {
+        "response" : {
+          "$ref" : "CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.insertCloudTask" : {
+        "request" : {
+          "$ref" : "CloudTask"
+        },
+        "response" : {
+          "$ref" : "CloudTask"
+        }
+      }
+    }
+  }
+}

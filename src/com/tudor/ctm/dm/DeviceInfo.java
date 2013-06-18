@@ -1,19 +1,20 @@
 package com.tudor.ctm.dm;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.PrimaryKey;
 
-@Entity
+@PersistenceCapable
 public class DeviceInfo {
-  @Id
-  private String deviceRegistrationID;
 
-  public String getDeviceRegistrationID() {
-    return deviceRegistrationID;
-  }
+	@PrimaryKey
+	private String deviceRegistrationID;
 
-  public void setDeviceRegistrationID(String deviceRegistrationID) {
-    this.deviceRegistrationID = deviceRegistrationID;
-  }
+	public String getDeviceRegistrationID() {
+		return deviceRegistrationID;
+	}
+
+	public void setDeviceRegistrationID(String deviceRegistrationID) {
+		this.deviceRegistrationID = deviceRegistrationID;
+	}
 
 }

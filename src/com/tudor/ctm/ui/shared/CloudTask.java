@@ -3,20 +3,36 @@ package com.tudor.ctm.ui.shared;
 import java.io.Serializable;
 import java.util.Date;
 
-public class CloudTask implements Serializable {
+import javax.jdo.annotations.FetchPlan;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.datanucleus.annotations.Unowned;
+
+
+@PersistenceCapable(identityType=IdentityType.APPLICATION, detachable="true")
+public class CloudTask implements Serializable {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4867959407964935026L;
+	private static final long serialVersionUID = 9127970229764340390L;
 	
+	@PrimaryKey
+	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
+	private Long id;
 	private String taskTitle;
 	private String taskDescription;
 	private Date taskDueDate;
-	private CTMUser owner;
+	@Persistent(defaultFetchGroup="true")
+	@Unowned
+	private String owner;
 	
 	public CloudTask(String taskTitle, String taskDescription,
-			Date taskDueDate, CTMUser owner) {
+			Date taskDueDate, String owner) {
 		this.taskTitle = taskTitle;
 		this.taskDescription = taskDescription;
 		this.taskDueDate = taskDueDate;
@@ -25,6 +41,12 @@ public class CloudTask implements Serializable {
 	
 	public CloudTask() {}
 	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getTaskTitle() {
 		return taskTitle;
 	}
@@ -43,10 +65,10 @@ public class CloudTask implements Serializable {
 	public void setTaskDueDate(Date taskDueDate) {
 		this.taskDueDate = taskDueDate;
 	}
-	public CTMUser getOwner() {
+	public String getOwner() {
 		return owner;
 	}
-	public void setOwner(CTMUser owner) {
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 
@@ -56,6 +78,4 @@ public class CloudTask implements Serializable {
 				+ taskDescription + ", taskDueDate=" + taskDueDate + ", owner="
 				+ owner + "]";
 	}
-
-	
 }

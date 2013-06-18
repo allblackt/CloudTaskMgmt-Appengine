@@ -5,7 +5,7 @@
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
   <init-param>
    <param-name>services</param-name>
-   <param-value>com.tudor.ctm.dm.DeviceInfoEndpoint</param-value>
+   <param-value>com.tudor.ctm.endpoint.CTMUserEndpoint,com.tudor.ctm.endpoint.DeviceInfoEndpoint,com.tudor.ctm.endpoint.CloudTaskEndpoint</param-value>
   </init-param>
  </servlet>
  <servlet-mapping>
