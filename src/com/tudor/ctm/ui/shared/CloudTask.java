@@ -3,7 +3,6 @@ package com.tudor.ctm.ui.shared;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.jdo.annotations.FetchPlan;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;

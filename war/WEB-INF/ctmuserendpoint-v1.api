@@ -44,6 +44,21 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "ctmuserendpoint.insertCTMUser" : {
+      "path" : "ctmuser",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CTMUserEndpoint.insertCTMUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "ctmuserendpoint.listCTMUser" : {
       "path" : "ctmuser/all",
       "httpMethod" : "GET",
@@ -63,21 +78,6 @@
           }
         },
         "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "ctmuserendpoint.insertCTMUser" : {
-      "path" : "ctmuser",
-      "httpMethod" : "POST",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CTMUserEndpoint.insertCTMUser",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -186,17 +186,17 @@
           "$ref" : "CTMUser"
         }
       },
-      "com.tudor.ctm.endpoint.CTMUserEndpoint.listCTMUser" : {
-        "response" : {
-          "$ref" : "CollectionResponse_CTMUser"
-        }
-      },
       "com.tudor.ctm.endpoint.CTMUserEndpoint.insertCTMUser" : {
         "request" : {
           "$ref" : "CTMUser"
         },
         "response" : {
           "$ref" : "CTMUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CTMUserEndpoint.listCTMUser" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CTMUser"
         }
       },
       "com.tudor.ctm.endpoint.CTMUserEndpoint.getCTMUserByEmail" : {

@@ -5,7 +5,7 @@
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
   <init-param>
    <param-name>services</param-name>
-   <param-value>com.tudor.ctm.endpoint.CTMUserEndpoint,com.tudor.ctm.endpoint.DeviceInfoEndpoint,com.tudor.ctm.endpoint.CloudTaskEndpoint</param-value>
+   <param-value>com.tudor.ctm.endpoint.CTMUserEndpoint,com.tudor.ctm.endpoint.CloudTaskEndpoint,com.tudor.ctm.endpoint.DeviceInfoEndpoint</param-value>
   </init-param>
  </servlet>
  <servlet-mapping>
@@ -88,13 +88,33 @@
 <!--   RPC servlets --> 
 
   <servlet>
-    <servlet-name>addTaskServlet</servlet-name>
-    <servlet-class>com.tudor.ctm.ui.server.AddTaskServiceImpl</servlet-class>
+    <servlet-name>manageTaskServlet</servlet-name>
+    <servlet-class>com.tudor.ctm.ui.server.ManageTaskServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>addTaskServlet</servlet-name>
-    <url-pattern>/com.tudor.ctm/addTask</url-pattern>
+    <servlet-name>manageTaskServlet</servlet-name>
+    <url-pattern>/com.tudor.ctm/manageTask</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>getUserTasks</servlet-name>
+    <servlet-class>com.tudor.ctm.ui.server.GetUserTasksImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>getUserTasks</servlet-name>
+    <url-pattern>/com.tudor.ctm/getUserTasks</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>getUserData</servlet-name>
+    <servlet-class>com.tudor.ctm.ui.server.GetUserDataImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>getUserData</servlet-name>
+    <url-pattern>/com.tudor.ctm/getUserData</url-pattern>
   </servlet-mapping>
  
 </web-app>

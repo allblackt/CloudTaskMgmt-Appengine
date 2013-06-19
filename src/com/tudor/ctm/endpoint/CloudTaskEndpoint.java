@@ -1,8 +1,9 @@
 package com.tudor.ctm.endpoint;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
@@ -14,16 +15,17 @@ import javax.persistence.EntityNotFoundException;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.util.PMF;
 
-@Api(name = "cloudtaskendpoint", namespace = @ApiNamespace(ownerDomain = "tudor.com", ownerName = "tudor.com", packagePath = "ctm.ui.shared"))
+@Api(name = "cloudtasks", version="v1" )
 public class CloudTaskEndpoint {
 
+	private static final Logger log = Logger.getLogger(CloudTaskEndpoint.class.getName());
+	
 	/**
 	 * This method lists all the entities inserted in datastore.
 	 * It uses HTTP GET method and paging support.
@@ -32,7 +34,7 @@ public class CloudTaskEndpoint {
 	 * persisted and a cursor to the next page.
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
-	@ApiMethod(name = "listCloudTask")
+	@ApiMethod(name = "listCloudTask", httpMethod="GET", path="listcloudtasks")
 	public CollectionResponse<CloudTask> listCloudTask(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
@@ -89,6 +91,26 @@ public class CloudTaskEndpoint {
 		}
 		return cloudtask;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "getUserTasks", path="getUserTasks/{email}", httpMethod="GET")
+	public List<CloudTask> getUserTasks(@Named("email") String email) {
+		PersistenceManager mgr = getPersistenceManager();
+		List<CloudTask> cloudtask = null;
+		try {
+			Query q = mgr.newQuery(CloudTask.class);
+			q.setFilter("owner == email");
+			q.declareParameters("String email");
+			List <CloudTask> r = (List<CloudTask>)q.execute(email);
+			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
+		} finally {
+			if(!mgr.isClosed())
+			{
+				mgr.close();
+			}
+		}
+		return cloudtask;
+	}
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity already
@@ -100,6 +122,7 @@ public class CloudTaskEndpoint {
 	 */
 	@ApiMethod(name = "insertCloudTask")
 	public CloudTask insertCloudTask(CloudTask cloudtask) {
+		log.info("Entered");
 		CloudTask ct = null;
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction tx = mgr.currentTransaction();
@@ -115,9 +138,9 @@ public class CloudTaskEndpoint {
 			ex.printStackTrace();
 		} 
 		finally {
-			if (tx.isActive())
-		    {
+			if (tx.isActive()) {
 		        tx.rollback();
+		        log.info("Exiting");
 		    }
 		}
 		return cloudtask;
@@ -133,14 +156,22 @@ public class CloudTaskEndpoint {
 	 */
 	@ApiMethod(name = "updateCloudTask")
 	public CloudTask updateCloudTask(CloudTask cloudtask) {
+		log.info("Entered");
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction tx = mgr.currentTransaction();
 		try {
 			if (!containsCloudTask(cloudtask)) {
 				throw new EntityNotFoundException("Object does not exist");
 			}
+			tx.begin();
+			mgr.setDetachAllOnCommit(true);
 			mgr.makePersistent(cloudtask);
+			tx.commit();
 		} finally {
-			mgr.close();
+			if (tx.isActive()) {
+		        tx.rollback();
+		    }
+			log.info("Exiting");
 		}
 		return cloudtask;
 	}
@@ -167,6 +198,7 @@ public class CloudTaskEndpoint {
 
 	private boolean containsCloudTask(CloudTask cloudtask) {
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction tx = mgr.currentTransaction();
 		boolean contains = true;
 		try {
 			mgr.getObjectById(CloudTask.class, cloudtask.getId());

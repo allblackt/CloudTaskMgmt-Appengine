@@ -4,13 +4,13 @@ import java.util.Date;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.tudor.ctm.endpoint.CloudTaskEndpoint;
-import com.tudor.ctm.ui.client.AddTaskService;
+import com.tudor.ctm.ui.client.ManageTaskService;
 import com.tudor.ctm.ui.shared.CTMException;
 import com.tudor.ctm.ui.shared.CTMUser;
 import com.tudor.ctm.ui.shared.CloudTask;
 
-public class AddTaskServiceImpl extends RemoteServiceServlet implements
-		AddTaskService {
+public class ManageTaskServiceImpl extends RemoteServiceServlet implements
+		ManageTaskService {
 
 	/**
 	 * 
@@ -29,6 +29,20 @@ public class AddTaskServiceImpl extends RemoteServiceServlet implements
 		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
 		
 		endpoint.insertCloudTask(ct);
+		
+		return ct;
+	}
+
+	@Override
+	public CloudTask editTask(Long taskId, String taskTitle,
+			String taskDescription, Date taskDueDate, String ownerEmail)
+			throws CTMException {
+		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, ownerEmail);
+		ct.setId(taskId);
+		
+		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
+		
+		endpoint.updateCloudTask(ct);
 		
 		return ct;
 	}

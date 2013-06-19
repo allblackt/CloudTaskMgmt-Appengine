@@ -1,2 +1,4 @@
 /gwt-unitCache
 .svn
+war/WEB-INF/classes/*.class
+war/WEB-INF/deploy/*
