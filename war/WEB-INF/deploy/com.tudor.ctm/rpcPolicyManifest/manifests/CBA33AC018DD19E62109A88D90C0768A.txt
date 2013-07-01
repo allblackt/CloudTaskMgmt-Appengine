@@ -1,2 +1,0 @@
-serviceClass: com.tudor.ctm.ui.client.AddTaskService
-path: 720CA0D84AD80EA318137ABBC4744CD8.gwt.rpc
