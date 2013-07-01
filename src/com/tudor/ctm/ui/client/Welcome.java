@@ -42,7 +42,26 @@ public class Welcome implements EntryPoint {
 	private final GetUserTasksAsync getUserTasks = GWT.create(GetUserTasks.class);
 	private final GetUserDataAsync getUserData = GWT.create(GetUserData.class);
 	
+//		taskTitle.setWidth("50em");
+//		
+//		taskDescription.setWidth("50em");
+//		taskDescription.setHeight("10em");
+//		
+//		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
+//		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+//		dateBox.setValue(new Date());
+//		
+//		rootPanel.add(taskTitle);
+//		rootPanel.add(dateBox);
+//		rootPanel.add(taskDescription);
+//		
+//		Button btnAddItem = new Button("Add");
+//		btnAddItem.addClickHandler(btnAddThing_onClick);
+//		rootPanel.add(btnAddItem);
 
+				addTaskBox.center();
+			}
+		});
 	
 	@Override
 	public void onModuleLoad() {
