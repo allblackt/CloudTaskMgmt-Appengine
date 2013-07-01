@@ -79,6 +79,26 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "cloudtasks.getCloudTask" : {
+      "path" : "cloudtask/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "cloudtasks.listCloudTask" : {
       "path" : "listcloudtasks",
       "httpMethod" : "GET",
@@ -95,26 +115,6 @@
           "limit" : {
             "type" : "int32",
             "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "cloudtasks.getCloudTask" : {
-      "path" : "cloudtask/{id}",
-      "httpMethod" : "GET",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
           }
         },
         "body" : "empty"
@@ -211,14 +211,14 @@
           "$ref" : "CloudTask"
         }
       },
-      "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
-        "response" : {
-          "$ref" : "CollectionResponse_CloudTask"
-        }
-      },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask" : {
         "response" : {
           "$ref" : "CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudTask"
         }
       },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.insertCloudTask" : {
