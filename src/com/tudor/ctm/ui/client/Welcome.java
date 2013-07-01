@@ -1,5 +1,6 @@
 package com.tudor.ctm.ui.client;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class Welcome implements EntryPoint {
 	private VerticalPanel vPanel; 
 	private DateBox dateBox;
 	private UserData loggedUser;
+	private DialogBox addTaskBox;
 	
 	private final ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
 	private final GetUserTasksAsync getUserTasks = GWT.create(GetUserTasks.class);
@@ -43,28 +45,43 @@ public class Welcome implements EntryPoint {
 	private void Init(){
 		
 		vPanel = new VerticalPanel();
-		taskTitle = new TextBox();
-		dateBox = new DateBox();
-		taskDescription = new TextArea();
+//		VerticalPanel mainControls = new VerticalPanel();
+//		taskTitle = new TextBox();
+//		dateBox = new DateBox();
+//		taskDescription = new TextArea();
+//		
+//		taskTitle.setWidth("50em");
+//		
+//		taskDescription.setWidth("50em");
+//		taskDescription.setHeight("10em");
+//		
+//		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
+//		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+//		dateBox.setValue(new Date());
+//		
+//		rootPanel.add(taskTitle);
+//		rootPanel.add(dateBox);
+//		rootPanel.add(taskDescription);
+//		
+//		Button btnAddItem = new Button("Add");
+//		btnAddItem.addClickHandler(btnAddThing_onClick);
+//		rootPanel.add(btnAddItem);
 		
-		taskTitle.setWidth("50em");
+		Button addWithPopup = new Button("Add new task...");
+		addWithPopup.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				addTaskBox = addNewTask();
+				addTaskBox.center();
+			}
+		});
 		
-		taskDescription.setWidth("50em");
-		taskDescription.setHeight("10em");
-		
-		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
-		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
-		dateBox.setValue(new Date());
-		
-		rootPanel.add(taskTitle);
-		rootPanel.add(dateBox);
-		rootPanel.add(taskDescription);
+		rootPanel.add(addWithPopup);
 		
 		rootPanel.add(vPanel);
 		
-		Button btnAddItem = new Button("Add");
-		btnAddItem.addClickHandler(btnAddThing_onClick);
-		rootPanel.add(btnAddItem);
+		
 	}
 	
 	@Override
@@ -132,7 +149,37 @@ public class Welcome implements EntryPoint {
 		@Override
 		public void onClick(ClickEvent event) {
 			showLoading();
-		    addTask(taskTitle.getValue(), taskDescription.getValue(), dateBox.getValue(), loggedUser.getEmail());
+		    boolean ok = true;
+		    String errMsg = "";
+		    long now = new Date().getTime();
+		    long taskTime = dateBox.getValue().getTime();
+		    try {
+				if(taskTitle.getValueOrThrow() == null){
+					errMsg += "The task must have a title! ";
+					ok = false;
+				} 
+				if(taskDescription.getValueOrThrow() == null){
+					errMsg += "The task must have a description! ";
+					ok = false;
+				}
+				
+				if(taskTime < now){
+					System.out.println(taskTime);
+					System.out.println(now);
+					errMsg += "The task due date must be in the future!";
+					ok = false;
+				}
+			} catch (ParseException e) {
+				ok = false;
+				errMsg = e.getMessage();
+			}
+		    if(ok){
+		    	addTask(taskTitle.getValue(), taskDescription.getValue(), dateBox.getValue(), loggedUser.getEmail());
+		    } else {
+		    	hideLoading();
+		    	alertWidget("Error", errMsg).center();
+		    }
+			
 		}
 	};
 	
@@ -158,12 +205,14 @@ public class Welcome implements EntryPoint {
 			@Override
 			public void onFailure(Throwable caught) {
 				hideLoading();
+				addTaskBox.hide();
 				alertWidget(caught.getMessage(), caught.getStackTrace().toString()).center();
 			}
 
 			@Override
 			public void onSuccess(CloudTask result) {
 				hideLoading();
+				addTaskBox.hide();
 				showAddedTask(result);
 			}
 			
@@ -220,7 +269,38 @@ public class Welcome implements EntryPoint {
 	    advancedDisclosure.setContent(decPanel);
 	    advancedDisclosure.setWidth("60em");
 	    
+	    //RootPanel.get("taskList").insert(advancedDisclosure, 0);
+	    
 	    vPanel.insert(advancedDisclosure, 0);
+	}
+	
+	public DialogBox addNewTask() {
+		final DialogBox box = new DialogBox();
+		VerticalPanel mainControls = new VerticalPanel();
+		taskTitle = new TextBox();
+		dateBox = new DateBox();
+		taskDescription = new TextArea();
+		
+		taskTitle.setWidth("50em");
+		
+		taskDescription.setWidth("50em");
+		taskDescription.setHeight("10em");
+		
+		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
+		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+		dateBox.setValue(new Date());
+		
+		mainControls.add(taskTitle);
+		mainControls.add(dateBox);
+		mainControls.add(taskDescription);
+		
+		Button btnAddItem = new Button("Add");
+		btnAddItem.addClickHandler(btnAddThing_onClick);
+		mainControls.add(btnAddItem);
+		
+		box.add(mainControls);
+		box.setGlassEnabled(true);
+		return box;
 	}
 	
 	public static DialogBox alertWidget(final String header, final String content) {
