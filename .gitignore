@@ -2,3 +2,9 @@
 .svn
 war/WEB-INF/classes/*.class
 war/WEB-INF/deploy/*
+*/local_db.bin
+war/WEB-INF/appengine-generated/local_db.bin
+.gwt/.gwt-log
+.settings/com.google.appengine.eclipse.core.prefs
+.settings/com.google.gdt.eclipse.core.prefs
+.settings/com.google.gwt.eclipse.core.prefs
