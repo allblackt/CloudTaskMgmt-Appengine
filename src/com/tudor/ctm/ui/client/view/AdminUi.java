@@ -1,6 +1,6 @@
-package com.tudor.ctm.ui.client;
+package com.tudor.ctm.ui.client.view;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -22,6 +22,8 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.tudor.ctm.ui.shared.CloudProject;
+import com.tudor.ctm.ui.shared.UserData;
+import com.google.gwt.user.client.ui.Button;
 
 public class AdminUi extends Composite {
 
@@ -37,6 +39,7 @@ public class AdminUi extends Composite {
 	ListBox coordinator;
 	@UiField
 	ListBox members;
+	@UiField Button btnSave;
 	
 	
 	private static AdminUiUiBinder uiBinder = GWT.create(AdminUiUiBinder.class);
@@ -67,7 +70,19 @@ public class AdminUi extends Composite {
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				Window.alert(selectionModel.getSelectedObject().getName());
+				members.clear();
+				coordinator.clear();				
+				int index = 0;
+				coordinator.setSelectedIndex(index);
+			    for (UserData userData : getProjectMembers(selectionModel.getSelectedObject().getId())) {
+					members.addItem(userData.getEmail());
+					coordinator.addItem(userData.getEmail());
+					
+					if(selectionModel.getSelectedObject().getOwner().getEmail() != userData.getEmail()) {
+						coordinator.setSelectedIndex(index);
+					} 
+					index++;
+				}
 			}
 		});
 		
@@ -97,17 +112,29 @@ public class AdminUi extends Composite {
 
 	      // Push the data into the widget.
 	    table.setRowData(projects);
+	    // set the first item as selected
+	    table.getSelectionModel().setSelected(projects.get(0), true);
 	    vPanelL.add(table);
+	    
 		
 	}
 	
+
 	private List<CloudProject> getCloudProjects() {
-		List<CloudProject> projects = new ArrayList<CloudProject>();
-		
-		projects.add(new CloudProject((long) 1, "Cloud project 1"));
-		projects.add(new CloudProject((long) 2, "Cloud project 2"));
+		List<CloudProject> projects = Arrays.asList(
+				new CloudProject.Builder().id((long) 1).name("Cloud Project 1").owner(new UserData("ttabace@gmail.com", "LogoutURL", false)).build(),
+				new CloudProject.Builder().id((long) 2).name("Cloud Project 2").owner(new UserData("ttabace@gmail.com", "LogoutURL", false)).build()
+				);
 		
 		return projects;
+	}
+	
+	private List<UserData> getProjectMembers(long projectId) {
+		List<UserData> projectMembers = Arrays.asList(
+					new UserData("tudorsmt@gmail.com", "LogoutURL", false),
+					new UserData("allblack007@gmail.com", "LogoutURL", false)
+				);
+		return projectMembers;
 	}
 
 }

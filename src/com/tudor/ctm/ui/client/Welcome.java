@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.datepicker.client.DateBox;
+import com.tudor.ctm.ui.client.view.AdminUi;
+import com.tudor.ctm.ui.client.view.UserUI;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.UserData;
 
@@ -42,26 +44,6 @@ public class Welcome implements EntryPoint {
 	private final GetUserTasksAsync getUserTasks = GWT.create(GetUserTasks.class);
 	private final GetUserDataAsync getUserData = GWT.create(GetUserData.class);
 	
-//		taskTitle.setWidth("50em");
-//		
-//		taskDescription.setWidth("50em");
-//		taskDescription.setHeight("10em");
-//		
-//		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
-//		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
-//		dateBox.setValue(new Date());
-//		
-//		rootPanel.add(taskTitle);
-//		rootPanel.add(dateBox);
-//		rootPanel.add(taskDescription);
-//		
-//		Button btnAddItem = new Button("Add");
-//		btnAddItem.addClickHandler(btnAddThing_onClick);
-//		rootPanel.add(btnAddItem);
-
-				addTaskBox.center();
-			}
-		});
 	
 	@Override
 	public void onModuleLoad() {
@@ -114,6 +96,16 @@ public class Welcome implements EntryPoint {
 	private void Init(){
 		
 		vPanel = new VerticalPanel();
+		
+		vPanel.add(new UserUI());
+		
+		rootPanel.add(vPanel);
+		
+		hideLoading();
+		
+		if(1==1)
+			return;
+		
 		Button addWithPopup = new Button("Add new task...");
 		addWithPopup.addClickHandler(new ClickHandler() {
 			
