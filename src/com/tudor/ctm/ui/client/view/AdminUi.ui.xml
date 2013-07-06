@@ -1,0 +1,40 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel>
+  		<g:TabPanel ui:field="tabPanel">
+  		    <g:Tab text="Admin" >
+  		        <g:HorizontalPanel ui:field="hPanel">
+	  		        <g:VerticalPanel ui:field="vPanelL"/>
+	  		        <g:VerticalPanel ui:field="vPanelR">
+	  		        	<g:Grid>
+	  		        		<g:row>
+	  		        			<g:customCell>
+	  		        				<g:Label text="Coordinator"/>
+	  		        			</g:customCell>
+	  		        			<g:customCell>
+	  		        				<g:ListBox ui:field="coordinator" width="100%"></g:ListBox>
+	  		        			</g:customCell>
+	  		        		</g:row>
+	  		        		<g:row>
+	  		        			<g:customCell>
+	  		        				<g:Label text="Members"/>
+	  		        			</g:customCell>
+	  		        			<g:customCell>
+	  		        				<g:ListBox ui:field="members" multipleSelect="true" width="100%"></g:ListBox>
+	  		        			</g:customCell>
+	  		        		</g:row>
+	  		        		<g:row>
+	  		        			<g:customCell>
+	  		        				<g:Button ui:field="btnSave" text="Save" width="59px"/>
+	  		        			</g:customCell>
+	  		        		</g:row>
+	  		        	</g:Grid>
+	  		        </g:VerticalPanel>    
+  		        </g:HorizontalPanel>
+  		    </g:Tab>
+  		</g:TabPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

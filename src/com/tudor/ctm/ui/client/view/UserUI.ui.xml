@@ -1,0 +1,24 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p1="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:ctm="urn:import:com.tudor.ctm.ui.client.view"
+	>
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel>
+		<g:DockPanel>
+			<g:Dock direction="WEST">
+				<g:VerticalPanel height="100%">
+					<p1:CellList ui:field="cellList"/>
+				</g:VerticalPanel>
+			</g:Dock>
+			<g:Dock direction="CENTER">
+				<g:VerticalPanel height="100%" ui:field="tasksContainer">
+					
+				</g:VerticalPanel>
+			</g:Dock>
+		</g:DockPanel>
+<!-- 		<g:Image url="img/project.png"/> -->
+	</g:HTMLPanel>
+</ui:UiBinder> 

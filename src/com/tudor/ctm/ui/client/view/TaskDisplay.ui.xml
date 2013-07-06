@@ -1,0 +1,52 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:p1="urn:import:com.google.gwt.user.datepicker.client">
+	<ui:style>
+		
+	</ui:style>
+	<g:HTMLPanel>
+		<g:Hidden name="Hidden name" ui:field="taskId"/>
+		<g:HTMLPanel width="517px" height="332px">
+					<table>
+						<tr>
+							<td>Task Title</td>
+							<td>
+								<g:TextBox ui:field="taskTitle" width="400px"></g:TextBox>
+							</td>
+						</tr>
+						<tr>
+							<td>Task Description</td>
+							<td>
+								<g:TextArea width="400px" height="115px" ui:field="taskDescription"></g:TextArea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Owner
+							</td>
+							<td>
+								<g:ListBox width="400px" ui:field="taskOwner"></g:ListBox>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>Due Date</td>
+							<td>
+								<p1:DateBox ui:field="dueDate"></p1:DateBox>
+							</td>
+						</tr>
+						<tr>
+							<td>Work hours remaining</td>
+							<td>
+								<g:IntegerBox ui:field="timeRemaining"></g:IntegerBox>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<g:Button text="Save" ui:field="btnSaveTask"/>
+							</td>
+						</tr>
+					</table>
+				</g:HTMLPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 
