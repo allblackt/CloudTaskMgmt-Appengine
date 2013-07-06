@@ -19,6 +19,5 @@
 				</g:VerticalPanel>
 			</g:Dock>
 		</g:DockPanel>
-<!-- 		<g:Image url="img/project.png"/> -->
 	</g:HTMLPanel>
 </ui:UiBinder> 
