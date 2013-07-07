@@ -27,7 +27,8 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.tudor.ctm.ui.client.view.AdminUi;
 import com.tudor.ctm.ui.client.view.UserUI;
 import com.tudor.ctm.ui.shared.CloudTask;
-import com.tudor.ctm.ui.shared.UserData;
+import com.tudor.ctm.ui.shared.CloudUser;
+import com.tudor.ctm.ui.shared.CloudProject;
 
 public class Welcome implements EntryPoint {
 
@@ -36,12 +37,13 @@ public class Welcome implements EntryPoint {
 	private TextArea taskDescription;
 	private VerticalPanel vPanel; 
 	private DateBox dateBox;
-	private UserData loggedUser;
+	private CloudUser loggedUser;
 	private DialogBox addTaskBox;
 	
 	private final ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
 	private final GetUserTasksAsync getUserTasks = GWT.create(GetUserTasks.class);
 	private final GetUserDataAsync getUserData = GWT.create(GetUserData.class);
+	private final ManageProjectAsync manageProject = GWT.create(ManageProject.class);
 	
 	
 	@Override
@@ -50,10 +52,10 @@ public class Welcome implements EntryPoint {
 		showLoading();
 		
 		/* Get the data associated with google login */
-		getUserData.getUserData(Window.Location.getPath() + Window.Location.getQueryString(), new AsyncCallback<UserData>() {
+		getUserData.getUserData(Window.Location.getPath() + Window.Location.getQueryString(), new AsyncCallback<CloudUser>() {
 			
 			@Override
-			public void onSuccess(UserData result) {
+			public void onSuccess(CloudUser result) {
 				
 				loggedUser = result;
 				
@@ -65,9 +67,9 @@ public class Welcome implements EntryPoint {
 					RootPanel.get("spnUsername").getElement().setInnerText(loggedUser.getEmail());
 					
 					if(result.getIsAdmin())
-					{
-						RootPanel.get("spnUsername").getElement().setInnerText(loggedUser.getEmail() + "(admin)");
+					{				
 						InitAdmin();
+						RootPanel.get("spnUsername").getElement().setInnerText(loggedUser.getEmail() + "(admin)");
 					}
 					else
 					{
@@ -96,7 +98,7 @@ public class Welcome implements EntryPoint {
 		
 		vPanel = new VerticalPanel();
 		
-		vPanel.add(new UserUI());
+		vPanel.add(new UserUI(loggedUser));
 		
 		rootPanel.add(vPanel);
 		
@@ -141,16 +143,10 @@ public class Welcome implements EntryPoint {
 	/* Initialize visual components for administrators */
 	private void InitAdmin() {
 		
-		AdminUi adminui = new AdminUi();
+		AdminUi adminui = new AdminUi(loggedUser);
 		
 		rootPanel.add(adminui);
-		
-//		TabPanel tabPanel = new TabPanel();
-//		
-//	    AdminWidget aw = new AdminWidget();
-//	    tabPanel.add(aw, "Admin");
-//	    tabPanel.selectTab(0);
-//	    rootPanel.add(tabPanel);
+
 	    hideLoading();
 	}
 	
@@ -202,7 +198,7 @@ public class Welcome implements EntryPoint {
 			TextBox tb = (TextBox) vp.getWidget(1);
 			DateBox db = (DateBox) vp.getWidget(3);
 			Hidden h = (Hidden) vp.getWidget(0);
-			editTask(Long.parseLong(h.getValue()), tb.getValue(), ta.getValue(), db.getValue(), loggedUser.getEmail());
+			editTask(Long.parseLong(h.getValue()), tb.getValue(), ta.getValue(), db.getValue(), loggedUser);
 		}
 	};
 	
@@ -229,8 +225,8 @@ public class Welcome implements EntryPoint {
 	}
 	
 	/* Wrapper over the async service call for editTask */
-	private void editTask(Long taskId, String taskTitle, String taskDescription, Date taskDueDate, String ownerEmail){
-		manageTaskService.editTask(taskId, taskTitle, taskDescription, taskDueDate, ownerEmail, new AsyncCallback<CloudTask>() {
+	private void editTask(Long taskId, String taskTitle, String taskDescription, Date taskDueDate, CloudUser owner){
+		manageTaskService.editTask(taskId, taskTitle, taskDescription, taskDueDate, owner, new AsyncCallback<CloudTask>() {
 					
 					@Override
 					public void onSuccess(CloudTask result) {

@@ -4,7 +4,10 @@
 	xmlns:ctm="urn:import:com.tudor.ctm.ui.client.view"
 	>
 	<ui:style>
-		
+		.tasksPadding {
+			padding-left: 10px;	
+	
+		}
 	</ui:style>
 	<g:HTMLPanel>
 		<g:DockPanel>
@@ -14,8 +17,9 @@
 				</g:VerticalPanel>
 			</g:Dock>
 			<g:Dock direction="CENTER">
-				<g:VerticalPanel height="100%" ui:field="tasksContainer">
-					
+				<g:VerticalPanel styleName="{style.tasksPadding}">
+					<g:Button text="Add new task" ui:field="btnNewTask"></g:Button>
+					<g:VerticalPanel height="100%" ui:field="tasksContainer" styleName="{style.tasksPadding}"></g:VerticalPanel>
 				</g:VerticalPanel>
 			</g:Dock>
 		</g:DockPanel>

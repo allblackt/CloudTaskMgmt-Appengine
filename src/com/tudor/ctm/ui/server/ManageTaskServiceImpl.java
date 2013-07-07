@@ -8,6 +8,7 @@ import com.tudor.ctm.ui.client.ManageTaskService;
 import com.tudor.ctm.ui.shared.CTMException;
 import com.tudor.ctm.ui.shared.CTMUser;
 import com.tudor.ctm.ui.shared.CloudTask;
+import com.tudor.ctm.ui.shared.CloudUser;
 
 public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		ManageTaskService {
@@ -20,9 +21,9 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public CloudTask addTask(String taskTitle, String taskDescription,
 			Date taskDueDate, String ownerEmail) throws CTMException {
-		CTMUser owner = new CTMUser();
+		CloudUser owner = new CloudUser();
 		owner.setEmail(ownerEmail);
-		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, ownerEmail);
+		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, owner);
 		
 		System.out.println(ct.toString());
 		
@@ -35,10 +36,9 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public CloudTask editTask(Long taskId, String taskTitle,
-			String taskDescription, Date taskDueDate, String ownerEmail)
+			String taskDescription, Date taskDueDate, CloudUser owner)
 			throws CTMException {
-		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, ownerEmail);
-		ct.setId(taskId);
+		CloudTask ct = new CloudTask.Builder().id(taskId).taskTitle(taskTitle).taskDescription(taskDescription).taskDueDate(taskDueDate).owner(owner).build();
 		
 		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
 		

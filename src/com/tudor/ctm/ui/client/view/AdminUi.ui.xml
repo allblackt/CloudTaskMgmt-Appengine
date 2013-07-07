@@ -7,7 +7,14 @@
   		<g:TabPanel ui:field="tabPanel">
   		    <g:Tab text="Admin" >
   		        <g:HorizontalPanel ui:field="hPanel">
-	  		        <g:VerticalPanel ui:field="vPanelL"/>
+  		        	<g:VerticalPanel>
+  		        			<g:HorizontalPanel>
+  		        				<g:Button ui:field="btnAddProject">Add Project</g:Button>
+  		        			</g:HorizontalPanel>
+  		        			<g:ScrollPanel width="250px" height="500px">
+  		        				<g:VerticalPanel ui:field="vPanelProjects" width="auto" height="auto"/>
+  		        			</g:ScrollPanel>
+  		        		</g:VerticalPanel>
 	  		        <g:VerticalPanel ui:field="vPanelR">
 	  		        	<g:Grid>
 	  		        		<g:row>

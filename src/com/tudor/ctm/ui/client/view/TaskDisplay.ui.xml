@@ -44,9 +44,11 @@
 						<tr>
 							<td colspan="2">
 								<g:Button text="Save" ui:field="btnSaveTask"/>
+								<g:Button text="Cancel" ui:field="btnCancel"/>
 							</td>
 						</tr>
 					</table>
+					
 				</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

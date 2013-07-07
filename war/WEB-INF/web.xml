@@ -12,7 +12,7 @@
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
   <init-param>
    <param-name>services</param-name>
-   <param-value>com.tudor.ctm.endpoint.CTMUserEndpoint,com.tudor.ctm.endpoint.CloudTaskEndpoint,com.tudor.ctm.endpoint.DeviceInfoEndpoint</param-value>
+   <param-value>com.tudor.ctm.endpoint.CTMUserEndpoint,com.tudor.ctm.endpoint.CloudProjectEndpoint,com.tudor.ctm.endpoint.CloudTaskEndpoint,com.tudor.ctm.endpoint.CloudUserEndpoint,com.tudor.ctm.endpoint.DeviceInfoEndpoint</param-value>
   </init-param>
  </servlet>
  <servlet-mapping>
@@ -123,5 +123,16 @@
     <servlet-name>getUserData</servlet-name>
     <url-pattern>/com.tudor.ctm/getUserData</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>manageproject</servlet-name>
+    <servlet-class>com.tudor.ctm.ui.server.ManageProjectImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>manageproject</servlet-name>
+    <url-pattern>/com.tudor.ctm/manageproject</url-pattern>
+  </servlet-mapping>
+ 
  
 </web-app>

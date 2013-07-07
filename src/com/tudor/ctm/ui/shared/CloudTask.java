@@ -25,10 +25,14 @@ public class CloudTask implements Serializable {
 	private int remainingTime;
 	@Persistent(defaultFetchGroup = "true")
 	@Unowned
-	private String owner;
+	private CloudUser owner;
+
+	@Persistent(defaultFetchGroup = "true")
+	@Unowned
+	private CloudProject project;
 
 	public CloudTask(String taskTitle, String taskDescription,
-			Date taskDueDate, String owner) {
+			Date taskDueDate, CloudUser owner) {
 		this.taskTitle = taskTitle;
 		this.taskDescription = taskDescription;
 		this.taskDueDate = taskDueDate;
@@ -70,11 +74,11 @@ public class CloudTask implements Serializable {
 		this.taskDueDate = taskDueDate;
 	}
 
-	public String getOwner() {
+	public CloudUser getOwner() {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(CloudUser owner) {
 		this.owner = owner;
 	}
 
@@ -90,18 +94,25 @@ public class CloudTask implements Serializable {
 	public String toString() {
 		return "CloudTask [taskTitle=" + taskTitle + ", taskDescription="
 				+ taskDescription + ", taskDueDate=" + taskDueDate + ", owner="
-				+ owner + "]";
+				+ owner + ", project="+ project +"]";
 	}
 
-	
-	/* Builder pattern for CloudTask */
+	public CloudProject getProject() {
+		return project;
+	}
+
+	public void setProject(CloudProject project) {
+		this.project = project;
+	}
+
 	public static class Builder {
 		private Long id;
 		private String taskTitle;
 		private String taskDescription;
 		private Date taskDueDate;
 		private int remainingTime;
-		private String owner;
+		private CloudUser owner;
+		private CloudProject project;
 
 		public Builder id(Long id) {
 			this.id = id;
@@ -128,8 +139,13 @@ public class CloudTask implements Serializable {
 			return this;
 		}
 
-		public Builder owner(String owner) {
+		public Builder owner(CloudUser owner) {
 			this.owner = owner;
+			return this;
+		}
+
+		public Builder project(CloudProject project) {
+			this.project = project;
 			return this;
 		}
 
@@ -138,7 +154,6 @@ public class CloudTask implements Serializable {
 		}
 	}
 
-	/* Private constructor to be used by the Builder */
 	private CloudTask(Builder builder) {
 		this.id = builder.id;
 		this.taskTitle = builder.taskTitle;
@@ -146,5 +161,6 @@ public class CloudTask implements Serializable {
 		this.taskDueDate = builder.taskDueDate;
 		this.remainingTime = builder.remainingTime;
 		this.owner = builder.owner;
+		this.project = builder.project;
 	}
 }

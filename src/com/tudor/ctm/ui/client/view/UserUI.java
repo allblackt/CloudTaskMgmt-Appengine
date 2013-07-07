@@ -1,6 +1,5 @@
 package com.tudor.ctm.ui.client.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -14,7 +13,9 @@ import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
@@ -24,6 +25,8 @@ import com.tudor.ctm.ui.client.res.CTMRes;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.FakeData;
+import com.tudor.ctm.ui.shared.CloudUser;
+import com.google.gwt.user.client.ui.Button;
 
 public class UserUI extends Composite{
 
@@ -31,6 +34,8 @@ public class UserUI extends Composite{
 			.create(UserViewUiBinder.class);
 	
 	private static CTMRes ctmresources = GWT.create(CTMRes.class);
+	
+	private CloudUser user;
 	
 	@UiField(provided=true) 
 	CellList<CloudProject> cellList = new CellList<CloudProject>(new AbstractCell<CloudProject>(){
@@ -49,47 +54,65 @@ public class UserUI extends Composite{
 		}
 	});
 	@UiField VerticalPanel tasksContainer;
+	@UiField Button btnNewTask;
 
 	interface UserViewUiBinder extends UiBinder<Widget, UserUI> {
 	}
 
-	public UserUI() {
+	public UserUI(CloudUser user) {
 		initWidget(uiBinder.createAndBindUi(this));
-		
-		List<CloudProject> projects = FakeData.getCloudProjects();
-		
+		this.user = user;
+		btnNewTask.addClickHandler(btnNewTaskClick);
 		cellList.setSelectionModel(getUserProjectSelectionModel());;
-		
-		cellList.setRowData(projects);
-		
-		cellList.redraw();
-		
-		for (CloudTask ct : FakeData.getCloudTasks()) {
-			final TaskDisplay td = new TaskDisplay(ct);
-			final DisclosurePanel dc = new DisclosurePanel(ct.getTaskTitle() + " - " + ct.getRemainingTime() + " hours left.");
-			dc.setOpen(false);
-			dc.setAnimationEnabled(true);
-			dc.setContent(td);
-			
-			td.getBtnSaveTask().addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					try {
-						CloudTask savedTask = td.getTask();
-						//td.setTask(savedTask);
-						dc.getHeaderTextAccessor().setText(savedTask.getTaskTitle() + " - " + savedTask.getRemainingTime() + " hours left.");
-						dc.setOpen(false);
-					} catch (Exception e) {
-						Window.alert(td.getErrorMessage());
-					}
-				}
-			});
-			tasksContainer.add(dc);
+		loadUserProjects(user);
+		tasksContainer.addStyleName("tasksPadding");
+	}
+	
+	private void loadUserProjects(CloudUser user) {
+		List<CloudProject> projects = FakeData.getCloudProjects();
+		if(projects == null || projects.size() == 0) {
+			return;
 		}
-		
-		
-
-		
+		cellList.setRowData(projects);
+		cellList.getSelectionModel().setSelected(projects.get(0), true);
+	}
+	
+	private void loadTasks (List<CloudTask> tasks) {
+		tasksContainer.clear();
+		if(tasks == null || tasks.size() == 0) {
+			tasksContainer.add(new HTML("No tasks to display"));
+		} else {
+			for (CloudTask ct : tasks) {
+				final TaskDisplay td = new TaskDisplay(ct, ct.getProject());
+				final DisclosurePanel dc = new DisclosurePanel(ct.getTaskTitle() + " - " + ct.getRemainingTime() + " hours left.");
+				dc.setOpen(false);
+				dc.setAnimationEnabled(true);
+				dc.setContent(td);
+				td.btnSaveTask.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						try {
+							CloudTask savedTask = td.getTask();
+							dc.getHeaderTextAccessor().setText(savedTask.getTaskTitle() + " - " + savedTask.getRemainingTime() + " hours left.");
+							dc.setOpen(false);
+						} catch (Exception e) {
+							Window.alert(td.getErrorMessage());
+						}
+					}
+				});
+				tasksContainer.add(dc);
+			}
+		}
+	}
+	
+	private void getProjectTasksForUser(CloudProject project) {
+			List<CloudTask> tasks = null;
+			System.out.println(project.getOwner().getEmail());
+			System.out.println(user.getEmail());
+			//if(project.getOwner().getEmail().compareToIgnoreCase(user.getEmail()) == 0) {
+				tasks = FakeData.getCloudTasks();
+			//}
+			loadTasks(tasks);
 	}
 	
 	private SingleSelectionModel<CloudProject> getUserProjectSelectionModel() {
@@ -107,10 +130,48 @@ public class UserUI extends Composite{
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				Window.alert(selectionModel.getSelectedObject().getName());
+				getProjectTasksForUser(selectionModel.getSelectedObject());
 			}
 		});
-		
 		return selectionModel;
 	}
+	
+	private ClickHandler btnNewTaskClick = new ClickHandler() {
+		@SuppressWarnings("unchecked")
+		@Override
+		public void onClick(ClickEvent event) {
+			final CloudProject cp = ((SingleSelectionModel<CloudProject>)cellList.getSelectionModel()).getSelectedObject();
+			final DialogBox box = new DialogBox();
+			final TaskDisplay td = new TaskDisplay(cp);
+			
+			td.btnCancel.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					box.hide();
+				}
+			});
+			
+			td.btnSaveTask.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					try {
+						CloudTask savedTask = td.getTask();
+						System.out.println(savedTask.toString());
+						cellList.getSelectionModel().setSelected(cp, true);
+						box.hide();
+					} catch (Exception e) {
+						if(td.getErrorMessage() == null) {
+							e.printStackTrace();
+						} else { 
+							Window.alert(td.getErrorMessage());
+						}
+					}
+				}
+			});
+			
+			box.add(td);
+			box.setGlassEnabled(true);
+			box.center();
+		}
+	};
 }

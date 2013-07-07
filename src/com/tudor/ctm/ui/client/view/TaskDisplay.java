@@ -15,9 +15,10 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
+import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
+import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.ui.shared.FakeData;
-import com.tudor.ctm.ui.shared.UserData;
 
 public class TaskDisplay extends Composite {
 
@@ -30,24 +31,27 @@ public class TaskDisplay extends Composite {
 	@UiField ListBox taskOwner;
 	@UiField Hidden taskId;
 	@UiField Button btnSaveTask;
-	String errorMessage = new String();
+	@UiField Button btnCancel;
+	private String errorMessage = new String();
+	private CloudProject project;
 
 	interface TaskDisplayUiBinder extends UiBinder<Widget, TaskDisplay> {
 	}
 
-	public TaskDisplay() {
+	public TaskDisplay(CloudProject project) {
 		initWidget(uiBinder.createAndBindUi(this));
 		DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd - MMM - yyyy");
 		dueDate.setFormat(new DateBox.DefaultFormat(dateFormat));
 		dueDate.setValue(new Date());
-		for (UserData user : FakeData.getUserList()) {
+		this.project = project;
+		for (CloudUser user : project.getMembers()) {
 			taskOwner.addItem(user.getEmail(), user.getEmail());
 		}
 		
 	}
 	
-	public TaskDisplay(CloudTask task) {
-		this();
+	public TaskDisplay(CloudTask task, CloudProject project) {
+		this(project);
 		setTask(task);
 	}
 	
@@ -58,7 +62,7 @@ public class TaskDisplay extends Composite {
 		dueDate.setValue(task.getTaskDueDate());
 		timeRemaining.setValue(task.getRemainingTime());
 		for(int i=0; i < taskOwner.getItemCount(); i++) {
-			if(task.getOwner().compareToIgnoreCase(taskOwner.getValue(i)) == 0) {
+			if(task.getOwner().getEmail().compareToIgnoreCase(taskOwner.getValue(i)) == 0) {
 				taskOwner.setSelectedIndex(i);
 				break;
 			}
@@ -78,12 +82,9 @@ public class TaskDisplay extends Composite {
 			.taskTitle(taskTitle.getValue().trim())
 			.remainingTime(timeRemaining.getValue())
 			.taskDueDate(dueDate.getValue())
-			.owner(taskOwner.getValue(taskOwner.getSelectedIndex()))
+			.project(project)
+			.owner(project.getMembers().get(taskOwner.getSelectedIndex()))
 			.build();
-	}
-	
-	public Button getBtnSaveTask() {
-		return btnSaveTask;
 	}
 	
 	public String getErrorMessage() {
@@ -110,11 +111,10 @@ public class TaskDisplay extends Composite {
 			isValid = false;
 			errorMessage += " Select a task owner!";
 		}
-		if(timeRemaining.getValue() < 0) {
+		if(timeRemaining.getValue() == null || timeRemaining.getValue() < 0) {
 			isValid = false;
-			errorMessage += " Time remaining must be at least 0!";
+			errorMessage += " Time remaining must be a numerical value of at least 0!";
 		}
-		
 		if(isValid) {
 			errorMessage = null;
 		}

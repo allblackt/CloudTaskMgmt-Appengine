@@ -1,5 +1,6 @@
 package com.tudor.ctm.ui.shared;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -10,18 +11,24 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class CloudProject {
+@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
+public class CloudProject implements Serializable {
 
+	private static final long serialVersionUID = 3316395777640173979L;
+	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
 	private String name;
+	@Persistent(defaultFetchGroup = "true")
 	@Unowned
-	private UserData owner;
-	@Persistent
+	private CloudUser owner;
+	@Persistent(defaultFetchGroup = "true")
 	@Unowned
-	private List<UserData> members;
+	private List<CloudUser> members;
+
+	public CloudProject() {
+	}
 
 	public CloudProject(Long id, String name) {
 		this.id = id;
@@ -44,28 +51,34 @@ public class CloudProject {
 		this.name = name;
 	}
 
-	public UserData getOwner() {
+	public CloudUser getOwner() {
 		return owner;
 	}
 
-	public void setOwner(UserData owner) {
+	public void setOwner(CloudUser owner) {
 		this.owner = owner;
 	}
 
-	public List<UserData> getMembers() {
+	public List<CloudUser> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<UserData> members) {
+	public void setMembers(List<CloudUser> members) {
 		this.members = members;
+	}
+	
+	@Override
+	public String toString() {
+		return "CloudProject [id=" + id + ", name=" + name + ", owner=" + owner.toString()
+				+ ", members=" + members.toString() + "]";
 	}
 
 	//Builder pattern
 	public static class Builder {
 		private Long id;
 		private String name;
-		private UserData owner;
-		private List<UserData> members;
+		private CloudUser owner;
+		private List<CloudUser> members;
 
 		public Builder id(Long id) {
 			this.id = id;
@@ -77,12 +90,12 @@ public class CloudProject {
 			return this;
 		}
 
-		public Builder owner(UserData owner) {
+		public Builder owner(CloudUser owner) {
 			this.owner = owner;
 			return this;
 		}
 
-		public Builder members(List<UserData> members) {
+		public Builder members(List<CloudUser> members) {
 			this.members = members;
 			return this;
 		}

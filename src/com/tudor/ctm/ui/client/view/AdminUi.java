@@ -1,18 +1,26 @@
 package com.tudor.ctm.ui.client.view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -21,16 +29,19 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.tudor.ctm.ui.client.GetUserData;
+import com.tudor.ctm.ui.client.GetUserDataAsync;
+import com.tudor.ctm.ui.client.ManageProject;
+import com.tudor.ctm.ui.client.ManageProjectAsync;
 import com.tudor.ctm.ui.shared.CloudProject;
-import com.tudor.ctm.ui.shared.UserData;
-import com.google.gwt.user.client.ui.Button;
+import com.tudor.ctm.ui.shared.CloudUser;
 
 public class AdminUi extends Composite {
 
 	@UiField
 	TabPanel tabPanel;
 	@UiField
-	VerticalPanel vPanelL;
+	VerticalPanel vPanelProjects;
 	@UiField
 	VerticalPanel vPanelR;
 	@UiField
@@ -40,29 +51,35 @@ public class AdminUi extends Composite {
 	@UiField
 	ListBox members;
 	@UiField Button btnSave;
+	@UiField Button btnAddProject;
 	
 	
 	private static AdminUiUiBinder uiBinder = GWT.create(AdminUiUiBinder.class);
-
+	private ManageProjectAsync manageProject = GWT.create(ManageProject.class);
+	private GetUserDataAsync userData = GWT.create(GetUserData.class);
+	private CellTable<CloudProject> table;
+	private CloudUser user;
+	private List<CloudUser> allUsers;
+	
 	@UiTemplate("AdminUi.ui.xml")
 	interface AdminUiUiBinder extends UiBinder<Widget, AdminUi> {
 	}
 
-	public AdminUi() {
+	public AdminUi(CloudUser user) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		tabPanel.selectTab(0);
 		
-		List<CloudProject> projects = getCloudProjects();
+		this.user = user;
 		
-		ProvidesKey<CloudProject> KEY_PROVIDER = new ProvidesKey<CloudProject>() {
+		final ProvidesKey<CloudProject> KEY_PROVIDER = new ProvidesKey<CloudProject>() {
 			@Override
 			public Object getKey(CloudProject item) {
 				return item.getId();
 			}
 		};
 		
-		final CellTable<CloudProject> table = new CellTable<CloudProject>(KEY_PROVIDER);
+		table = new CellTable<CloudProject>(KEY_PROVIDER);
 		
 		final SingleSelectionModel<CloudProject> selectionModel = new SingleSelectionModel<CloudProject>(KEY_PROVIDER);
 		
@@ -70,19 +87,11 @@ public class AdminUi extends Composite {
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				members.clear();
-				coordinator.clear();				
-				int index = 0;
-				coordinator.setSelectedIndex(index);
-			    for (UserData userData : getProjectMembers(selectionModel.getSelectedObject().getId())) {
-					members.addItem(userData.getEmail());
-					coordinator.addItem(userData.getEmail());
-					
-					if(selectionModel.getSelectedObject().getOwner().getEmail() != userData.getEmail()) {
-						coordinator.setSelectedIndex(index);
-					} 
-					index++;
+				setOptions();
+				for (CloudUser member : selectionModel.getSelectedObject().getMembers()) {
+					members.setItemSelected(allUsers.indexOf(member), true);
 				}
+				coordinator.setSelectedIndex(allUsers.indexOf(selectionModel.getSelectedObject().getOwner()));
 			}
 		});
 		
@@ -97,44 +106,158 @@ public class AdminUi extends Composite {
 			}
 	    };
 	    
-	    table.addColumn(nameColumn, "Project name");
-		
-	    nameColumn.setFieldUpdater(new FieldUpdater<CloudProject, String>() {
+	    
+	    //table.addColumn(nameColumn, "Project name");
+	    table.addColumn(nameColumn);
 
+	    nameColumn.setFieldUpdater(new FieldUpdater<CloudProject, String>() {
 			@Override
 			public void update(int index, CloudProject object, String value) {
-				Window.alert("You changed the name of " + object.getName() + " to " + value);
-				// Push the changes into the Contact. At this point, you could send an
-				// asynchronous request to the server to update the database.
+				if(isProjectNameValid(value, 1)){
+					object.setName(value);
+					table.getSelectionModel().setSelected(object, true);
+				} else {
+					nameCell.clearViewData(KEY_PROVIDER.getKey(object));
+					new MessageBox("The project name you provided is invalid. A project with the same name already exists.").center();
+					
+				}
 				table.redraw();
 			}
 		});
 
-	      // Push the data into the widget.
-	    table.setRowData(projects);
-	    // set the first item as selected
-	    table.getSelectionModel().setSelected(projects.get(0), true);
-	    vPanelL.add(table);
+	    vPanelProjects.add(table);
 	    
-		
+	    displayProjects();
 	}
 	
-
-	private List<CloudProject> getCloudProjects() {
-		List<CloudProject> projects = Arrays.asList(
-				new CloudProject.Builder().id((long) 1).name("Cloud Project 1").owner(new UserData("ttabace@gmail.com", "LogoutURL", false)).build(),
-				new CloudProject.Builder().id((long) 2).name("Cloud Project 2").owner(new UserData("ttabace@gmail.com", "LogoutURL", false)).build()
-				);
-		
-		return projects;
+	private void displayProjects() {
+		manageProject.getCloudProjects(new AsyncCallback<List<CloudProject>>() {
+			@Override
+			public void onSuccess(final List<CloudProject> projects) {
+			    /* Populate the table */
+			    if(projects != null && projects.size() > 0) {
+			    	vPanelProjects.clear();
+			    	vPanelProjects.add(table);
+			    	vPanelR.setVisible(true);
+			    	table.setVisible(true);
+			    	table.setRowData(projects);
+			    	table.redraw();
+			    	userData.getAllUsers(new AsyncCallback<List<CloudUser>>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							new MessageBox(caught.getMessage()).center();
+						}
+						@Override
+						public void onSuccess(List<CloudUser> result) {
+							if( result!=null && result.size() > 0) {
+								allUsers = result;
+								setOptions();
+								table.getSelectionModel().setSelected(projects.get(0), true);
+							}
+						}
+					});
+			    } else {
+			    	vPanelProjects.add(new HTML("No projects defined"));
+			    	vPanelR.setVisible(false);
+			    	table.setVisible(false);
+			    }
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				new MessageBox(caught.getMessage());
+			}
+		});
 	}
 	
-	private List<UserData> getProjectMembers(long projectId) {
-		List<UserData> projectMembers = Arrays.asList(
-					new UserData("tudorsmt@gmail.com", "LogoutURL", false),
-					new UserData("allblack007@gmail.com", "LogoutURL", false)
-				);
-		return projectMembers;
+	private void setOptions() {
+		members.clear();
+		coordinator.clear();
+		for (CloudUser user : allUsers) {
+			members.addItem(user.getEmail());
+			coordinator.addItem(user.getEmail());
+		}
+	}
+	
+	private boolean isProjectNameValid(String name, int max) {
+		for (CloudProject project : table.getVisibleItems()) {
+			if(project.getName().trim().compareToIgnoreCase(name) == 0) {
+				max--;
+			}
+			if(max == 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
+	@UiHandler("btnAddProject")
+	void onBtnAddProjectClick(ClickEvent event) {
+		final DialogBox box = new DialogBox();
+		final AddProject ap = new AddProject();
+		box.add(ap);
+		ap.btnCancel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				box.hide();
+			}
+		});
+		ap.btnSave.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if(ap.txtProjectName.getValue().trim().length() == 0) {
+					new MessageBox("Please enter a project name").center();
+				} else if (!isProjectNameValid(ap.txtProjectName.getValue().trim(), 1)) {
+					new MessageBox("The project name you provided is invalid. A project with the same name already exists.").center();
+				} else {
+					box.hide();
+					
+					CloudProject cp = new CloudProject.Builder().name(ap.txtProjectName.getValue()).owner(user).members(Arrays.asList(user)).build();
+					
+					manageProject.addCloudProject(cp, new AsyncCallback<Boolean>() {
+						
+						@Override
+						public void onSuccess(Boolean result) {
+							displayProjects();
+						}
+						
+						@Override
+						public void onFailure(Throwable caught) {
+							new MessageBox(caught.getMessage());
+						}
+					});
+					
+				}
+			}
+		});
+		box.setGlassEnabled(true);
+		box.center();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@UiHandler("btnSave")
+	void onBtnSaveClick(ClickEvent event) {
+		CloudProject project = ((SingleSelectionModel<CloudProject>)table.getSelectionModel()).getSelectedObject();
+		List<CloudUser> selectedMembers = new ArrayList<CloudUser>();
+		for (int i = 0 ; i < members.getItemCount() ; i++) {
+			if(members.isItemSelected(i)) {
+				selectedMembers.add(allUsers.get(i));
+			}
+		}
+		project.setMembers(selectedMembers);
+		project.setOwner(allUsers.get(coordinator.getSelectedIndex()));
+		
+		manageProject.saveCloudProject(project, new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				new MessageBox(caught.getMessage()).center();
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				new MessageBox("Project saved.").center();
+			}
+		});
+	}
 }
