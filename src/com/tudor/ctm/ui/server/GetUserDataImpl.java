@@ -6,8 +6,10 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.tudor.ctm.endpoint.CloudProjectEndpoint;
 import com.tudor.ctm.endpoint.CloudUserEndpoint;
 import com.tudor.ctm.ui.client.GetUserData;
+import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudUser;
 
 public class GetUserDataImpl extends RemoteServiceServlet implements
@@ -44,6 +46,11 @@ public class GetUserDataImpl extends RemoteServiceServlet implements
 	@Override
 	public List<CloudUser> getAllUsers() {
 		return new CloudUserEndpoint().getAllUsers();
+	}
+
+	@Override
+	public List<CloudProject> getUserProjects(CloudUser user) {
+		return new CloudProjectEndpoint().getUserProjects(user);
 	}
 
 }

@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -21,6 +22,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.tudor.ctm.ui.client.GetUserData;
+import com.tudor.ctm.ui.client.GetUserDataAsync;
+import com.tudor.ctm.ui.client.ManageTaskService;
+import com.tudor.ctm.ui.client.ManageTaskServiceAsync;
 import com.tudor.ctm.ui.client.res.CTMRes;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
@@ -34,6 +39,8 @@ public class UserUI extends Composite{
 			.create(UserViewUiBinder.class);
 	
 	private static CTMRes ctmresources = GWT.create(CTMRes.class);
+	private static GetUserDataAsync getUserData = GWT.create(GetUserData.class);
+	private static ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
 	
 	private CloudUser user;
 	
@@ -69,12 +76,26 @@ public class UserUI extends Composite{
 	}
 	
 	private void loadUserProjects(CloudUser user) {
-		List<CloudProject> projects = FakeData.getCloudProjects();
-		if(projects == null || projects.size() == 0) {
-			return;
-		}
-		cellList.setRowData(projects);
-		cellList.getSelectionModel().setSelected(projects.get(0), true);
+		
+		getUserData.getUserProjects(user, new AsyncCallback<List<CloudProject>>() {
+			
+			@Override
+			public void onSuccess(List<CloudProject> projects) {
+				if(projects != null)
+					System.out.println(projects.toString());
+					if(projects == null || projects.size() == 0) {
+					return;
+				}
+				cellList.setRowData(projects);
+				cellList.getSelectionModel().setSelected(projects.get(0), true);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				new MessageBox(caught.getMessage()).center();				
+			}
+		});
 	}
 	
 	private void loadTasks (List<CloudTask> tasks) {
@@ -106,13 +127,26 @@ public class UserUI extends Composite{
 	}
 	
 	private void getProjectTasksForUser(CloudProject project) {
-			List<CloudTask> tasks = null;
-			System.out.println(project.getOwner().getEmail());
-			System.out.println(user.getEmail());
-			//if(project.getOwner().getEmail().compareToIgnoreCase(user.getEmail()) == 0) {
-				tasks = FakeData.getCloudTasks();
-			//}
-			loadTasks(tasks);
+//			List<CloudTask> tasks = null;
+//			System.out.println("Owner:" + project.getOwner().getEmail());
+//			System.out.println("Current user:" + user.getEmail());
+//			//if(project.getOwner().getEmail().compareToIgnoreCase(user.getEmail()) == 0) {
+//				tasks = FakeData.getCloudTasks();
+//			//}
+		manageTaskService.getProjectTasks(project, user, new AsyncCallback<List<CloudTask>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				new MessageBox(caught.getMessage()).center();
+			}
+
+			@Override
+			public void onSuccess(List<CloudTask> tasks) {
+				loadTasks(tasks);
+			}
+		});
+			
 	}
 	
 	private SingleSelectionModel<CloudProject> getUserProjectSelectionModel() {

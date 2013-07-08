@@ -21,6 +21,7 @@ public class AddProject extends Composite {
 
 	public AddProject() {
 		initWidget(uiBinder.createAndBindUi(this));
+		txtProjectName.setFocus(true);
 	}
 
 }

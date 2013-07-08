@@ -1,12 +1,14 @@
 package com.tudor.ctm.ui.server;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.tudor.ctm.endpoint.CloudTaskEndpoint;
 import com.tudor.ctm.ui.client.ManageTaskService;
 import com.tudor.ctm.ui.shared.CTMException;
 import com.tudor.ctm.ui.shared.CTMUser;
+import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
 
@@ -45,6 +47,15 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		endpoint.updateCloudTask(ct);
 		
 		return ct;
+	}
+
+	@Override
+	public List<CloudTask> getProjectTasks(CloudProject project, CloudUser user) {
+		if(project.getOwner().equals(user)) {
+			return new CloudTaskEndpoint().getProjectTasks(project);
+		} else {
+			return new CloudTaskEndpoint().getUserTasks(project, user);
+		}
 	}
 
 }

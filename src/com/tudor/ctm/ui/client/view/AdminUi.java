@@ -232,6 +232,7 @@ public class AdminUi extends Composite {
 		});
 		box.setGlassEnabled(true);
 		box.center();
+		ap.txtProjectName.setFocus(true);
 	}
 	
 	@SuppressWarnings("unchecked")

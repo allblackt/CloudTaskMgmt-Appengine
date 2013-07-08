@@ -114,15 +114,8 @@ public class CloudUser implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((deviceKeys == null) ? 0 : deviceKeys.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((isAdmin == null) ? 0 : isAdmin.hashCode());
-		result = prime * result
-				+ ((isLoggedIn == null) ? 0 : isLoggedIn.hashCode());
-		result = prime * result
-				+ ((logoutURL == null) ? 0 : logoutURL.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -136,11 +129,6 @@ public class CloudUser implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		CloudUser other = (CloudUser) obj;
-		if (deviceKeys == null) {
-			if (other.deviceKeys != null)
-				return false;
-		} else if (!deviceKeys.equals(other.deviceKeys))
-			return false;
 		if (email == null) {
 			if (other.email != null)
 				return false;
@@ -150,26 +138,6 @@ public class CloudUser implements Serializable {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (isAdmin == null) {
-			if (other.isAdmin != null)
-				return false;
-		} else if (!isAdmin.equals(other.isAdmin))
-			return false;
-		if (isLoggedIn == null) {
-			if (other.isLoggedIn != null)
-				return false;
-		} else if (!isLoggedIn.equals(other.isLoggedIn))
-			return false;
-		if (logoutURL == null) {
-			if (other.logoutURL != null)
-				return false;
-		} else if (!logoutURL.equals(other.logoutURL))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

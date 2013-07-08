@@ -1,8 +1,8 @@
 package com.tudor.ctm.endpoint;
 
 import com.tudor.ctm.ui.shared.CloudProject;
+import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.util.PMF;
-
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -10,6 +10,7 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,6 +90,26 @@ public class CloudProjectEndpoint {
 			mgr.close();
 		}
 		return cloudproject;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CloudProject> getUserProjects(CloudUser user) {
+		List<CloudProject> projects = null;
+		PersistenceManager mgr = null;
+		try {
+			System.out.println(user.toString());
+			mgr = getPersistenceManager();
+			Query q = mgr.newQuery(CloudProject.class);
+			q.setFilter("members.contains(usr) && usr.id==:userId");
+			q.declareVariables(CloudUser.class.getName() +  " usr");
+			projects = (List<CloudProject>) q.execute(user.getId());
+			projects = (List<CloudProject>) mgr.detachCopyAll(projects);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mgr.close();
+		}
+		return projects;
 	}
 
 	/**

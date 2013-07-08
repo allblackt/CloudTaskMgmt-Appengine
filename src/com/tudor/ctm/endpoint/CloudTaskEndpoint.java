@@ -17,7 +17,9 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
+import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.util.PMF;
 
 @Api(name = "cloudtasks", version="v1" )
@@ -110,7 +112,47 @@ public class CloudTaskEndpoint {
 		}
 		return cloudtask;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CloudTask> getProjectTasks(CloudProject project) {
+		PersistenceManager mgr = getPersistenceManager();
+		List<CloudTask> cloudtask = null;
+		try {
+			Query q = mgr.newQuery(CloudTask.class);
+			q.setFilter("project == projectParameter");
+			q.declareParameters("CloudProject projectParameter");
+			List <CloudTask> r = (List<CloudTask>)q.execute(project);
+			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
+		} finally {
+			if(!mgr.isClosed())
+			{
+				mgr.close();
+			}
+		}
+		return cloudtask;
+	}
 
+	@SuppressWarnings("unchecked")
+	public List<CloudTask> getUserTasks(CloudProject project, CloudUser user) {
+		PersistenceManager mgr = getPersistenceManager();
+		List<CloudTask> cloudtask = null;
+		try {
+			Query q = mgr.newQuery(CloudTask.class);
+			q.setFilter("project == project && owner == user");
+			q.declareParameters("CloudProject project, CloudUser user");
+			List <CloudTask> r = (List<CloudTask>)q.execute(project, user);
+			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(!mgr.isClosed())
+			{
+				mgr.close();
+			}
+		}
+		return cloudtask;
+	}
+	
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity already
 	 * exists in the datastore, an exception is thrown.
@@ -212,5 +254,7 @@ public class CloudTaskEndpoint {
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
+
+
 
 }
