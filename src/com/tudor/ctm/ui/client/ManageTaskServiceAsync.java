@@ -19,4 +19,8 @@ public interface ManageTaskServiceAsync {
 	void getProjectTasks(CloudProject project, CloudUser user,
 			AsyncCallback<List<CloudTask>> callback);
 
+	void addTask(CloudTask task, AsyncCallback<CloudTask> callback);
+
+	void editTask(CloudTask task, AsyncCallback<CloudTask> callback);
+
 }

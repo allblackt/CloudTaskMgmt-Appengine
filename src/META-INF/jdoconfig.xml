@@ -10,5 +10,7 @@
        <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
        <property name="datanucleus.appengine.singletonPMFForName" value="true"/>
        <property name="datanucleus.appengine.datastoreEnableXGTransactions" value="true"/>
+       <property name="datanucleus.maxFetchDepth" value="2"/> 
+       <property name="datanucleus.persistenceByReachabilityAtCommit" value="false"/>
    </persistence-manager-factory>
 </jdoconfig>

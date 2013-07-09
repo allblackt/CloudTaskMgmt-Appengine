@@ -1,5 +1,6 @@
 package com.tudor.ctm.endpoint;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -108,6 +109,7 @@ public class CloudUserEndpoint {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ApiMethod(name="getCloudUserByEmail", httpMethod="GET", path="clouduserbyemail")
 	public CloudUser getCloudUserByEmail(@Named("email") String email) {
 		CloudUser clouduser = null;
 		PersistenceManager mgr = getPersistenceManager();
@@ -128,6 +130,29 @@ public class CloudUserEndpoint {
 		}
 		return clouduser;
 	}
+	
+	@ApiMethod(name="registerDeviceForUser", httpMethod="POST", path="registerDeviceKey")
+	public boolean registerDeviceForUser(@Named("email") String email, @Named("deviceKey") String deviceKey) {
+		CloudUser user = null;
+		try {
+			user = getCloudUserByEmail(email);
+			if(user.getDeviceKeys() != null && user.getDeviceKeys().contains(deviceKey)) {
+				return true;
+			} else {
+				if(user.getDeviceKeys() == null) {
+					user.setDeviceKeys(Arrays.asList(deviceKey));
+				} else {
+					user.getDeviceKeys().add(deviceKey);
+				}
+			}
+			updateCloudUser(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity already

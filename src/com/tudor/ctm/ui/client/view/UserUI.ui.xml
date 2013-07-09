@@ -19,7 +19,9 @@
 			<g:Dock direction="CENTER">
 				<g:VerticalPanel styleName="{style.tasksPadding}">
 					<g:Button text="Add new task" ui:field="btnNewTask"></g:Button>
-					<g:VerticalPanel height="100%" ui:field="tasksContainer" styleName="{style.tasksPadding}"></g:VerticalPanel>
+					<g:VerticalPanel height="100%" ui:field="tasksContainer" styleName="{style.tasksPadding}">
+						<g:HTML ui:field="noTasks" text="No tasks to display" visible="false"></g:HTML>
+					</g:VerticalPanel>
 				</g:VerticalPanel>
 			</g:Dock>
 		</g:DockPanel>

@@ -39,8 +39,6 @@ import com.tudor.ctm.ui.shared.CloudUser;
 public class AdminUi extends Composite {
 
 	@UiField
-	TabPanel tabPanel;
-	@UiField
 	VerticalPanel vPanelProjects;
 	@UiField
 	VerticalPanel vPanelR;
@@ -68,7 +66,7 @@ public class AdminUi extends Composite {
 	public AdminUi(CloudUser user) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		tabPanel.selectTab(0);
+		//tabPanel.selectTab(0);
 		
 		this.user = user;
 		
@@ -106,8 +104,6 @@ public class AdminUi extends Composite {
 			}
 	    };
 	    
-	    
-	    //table.addColumn(nameColumn, "Project name");
 	    table.addColumn(nameColumn);
 
 	    nameColumn.setFieldUpdater(new FieldUpdater<CloudProject, String>() {

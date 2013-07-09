@@ -14,6 +14,10 @@ import com.tudor.ctm.ui.shared.CloudUser;
 public interface ManageTaskService extends RemoteService {
 	public CloudTask addTask(String taskTitle, String taskDescription, Date taskDueDate, String ownerEmail) throws CTMException;
 	
+	public CloudTask addTask(CloudTask task);
+	
+	public CloudTask editTask(CloudTask task);
+	
 	public CloudTask editTask(Long taskId, String taskTitle, String taskDescription,
 			Date taskDueDate, CloudUser owner) throws CTMException;
 	

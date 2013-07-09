@@ -1,6 +1,7 @@
 package com.tudor.ctm.ui.client.view;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -26,6 +27,7 @@ import com.tudor.ctm.ui.client.GetUserData;
 import com.tudor.ctm.ui.client.GetUserDataAsync;
 import com.tudor.ctm.ui.client.ManageTaskService;
 import com.tudor.ctm.ui.client.ManageTaskServiceAsync;
+import com.tudor.ctm.ui.client.Welcome;
 import com.tudor.ctm.ui.client.res.CTMRes;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
@@ -41,14 +43,13 @@ public class UserUI extends Composite{
 	private static CTMRes ctmresources = GWT.create(CTMRes.class);
 	private static GetUserDataAsync getUserData = GWT.create(GetUserData.class);
 	private static ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
-	
 	private CloudUser user;
+	private static final Logger log = Logger.getLogger(UserUI.class.getName());
 	
 	@UiField(provided=true) 
 	CellList<CloudProject> cellList = new CellList<CloudProject>(new AbstractCell<CloudProject>(){
 		@Override
 		public void render(Context context, CloudProject value, SafeHtmlBuilder sb) {
-			//sb.appendEscaped(value.getName());
 			sb.appendHtmlConstant("<table>");
 		    sb.appendHtmlConstant("<tr><td rowspan='3'>");
 		    sb.appendHtmlConstant(AbstractImagePrototype.create(ctmresources.projectIcon()).getHTML());
@@ -62,6 +63,7 @@ public class UserUI extends Composite{
 	});
 	@UiField VerticalPanel tasksContainer;
 	@UiField Button btnNewTask;
+	@UiField HTML noTasks;
 
 	interface UserViewUiBinder extends UiBinder<Widget, UserUI> {
 	}
@@ -76,11 +78,12 @@ public class UserUI extends Composite{
 	}
 	
 	private void loadUserProjects(CloudUser user) {
-		
+		Welcome.showLoading();
 		getUserData.getUserProjects(user, new AsyncCallback<List<CloudProject>>() {
 			
 			@Override
 			public void onSuccess(List<CloudProject> projects) {
+				Welcome.hideLoading();
 				if(projects != null)
 					System.out.println(projects.toString());
 					if(projects == null || projects.size() == 0) {
@@ -92,6 +95,7 @@ public class UserUI extends Composite{
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				Welcome.hideLoading();
 				caught.printStackTrace();
 				new MessageBox(caught.getMessage()).center();				
 			}
@@ -99,54 +103,84 @@ public class UserUI extends Composite{
 	}
 	
 	private void loadTasks (List<CloudTask> tasks) {
+		System.out.println("Should start loading tasks...");
 		tasksContainer.clear();
 		if(tasks == null || tasks.size() == 0) {
-			tasksContainer.add(new HTML("No tasks to display"));
+			noTasks.setVisible(true);
+			tasksContainer.add(noTasks);
 		} else {
+			System.out.println(tasks.size() + " tasks in current project");
 			for (CloudTask ct : tasks) {
-				final TaskDisplay td = new TaskDisplay(ct, ct.getProject());
-				final DisclosurePanel dc = new DisclosurePanel(ct.getTaskTitle() + " - " + ct.getRemainingTime() + " hours left.");
-				dc.setOpen(false);
-				dc.setAnimationEnabled(true);
-				dc.setContent(td);
-				td.btnSaveTask.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						try {
-							CloudTask savedTask = td.getTask();
-							dc.getHeaderTextAccessor().setText(savedTask.getTaskTitle() + " - " + savedTask.getRemainingTime() + " hours left.");
-							dc.setOpen(false);
-						} catch (Exception e) {
-							Window.alert(td.getErrorMessage());
-						}
-					}
-				});
-				tasksContainer.add(dc);
+				addTaskToContainer(ct);					
 			}
 		}
 	}
 	
+	private void addTaskToContainer(CloudTask ct) {
+		/* Skip adding the task in view if the user isn't the owner of the project / task */
+		if( !ct.getOwner().equals(user) && !ct.getProject().getOwner().equals(user)) {
+			return;
+		}
+		
+		final TaskDisplay td = new TaskDisplay(ct, ct.getProject());
+		final DisclosurePanel dc = new DisclosurePanel(ct.getTaskTitle() + " - " + ct.getRemainingTime() + " hours left.");
+		dc.setOpen(false);
+		dc.setAnimationEnabled(true);
+		dc.setContent(td);
+		
+		/* Prepare task for being edited */
+		td.btnSaveTask.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				try {
+					Welcome.showLoading();
+					CloudTask savedTask = td.getTask();
+					manageTaskService.editTask(savedTask, new AsyncCallback<CloudTask>() {
+						@Override
+						public void onSuccess(CloudTask savedTask) {
+							if(savedTask.getOwner().equals(user) || savedTask.getProject().getOwner().equals(user)) {
+								dc.getHeaderTextAccessor().setText(savedTask.getTaskTitle() + " - " + savedTask.getRemainingTime() + " hours left.");
+								dc.setOpen(false);
+							} else {
+								/* Remove if task was reassigned */
+								dc.removeFromParent();
+							}
+							Welcome.hideLoading();
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							new MessageBox(caught.getMessage()).center();
+							Welcome.hideLoading();
+						}
+					});
+					
+				} catch (Exception e) {
+					Welcome.hideLoading();
+					new MessageBox(td.getErrorMessage()).center();;
+				}
+			}
+		});
+		tasksContainer.add(dc);
+	}
+	
 	private void getProjectTasksForUser(CloudProject project) {
-//			List<CloudTask> tasks = null;
-//			System.out.println("Owner:" + project.getOwner().getEmail());
-//			System.out.println("Current user:" + user.getEmail());
-//			//if(project.getOwner().getEmail().compareToIgnoreCase(user.getEmail()) == 0) {
-//				tasks = FakeData.getCloudTasks();
-//			//}
+		Welcome.showLoading();
 		manageTaskService.getProjectTasks(project, user, new AsyncCallback<List<CloudTask>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				Welcome.hideLoading();
 				caught.printStackTrace();
 				new MessageBox(caught.getMessage()).center();
 			}
 
 			@Override
 			public void onSuccess(List<CloudTask> tasks) {
+				Welcome.hideLoading();
+				System.out.println("Loading tasks...");
 				loadTasks(tasks);
 			}
 		});
-			
 	}
 	
 	private SingleSelectionModel<CloudProject> getUserProjectSelectionModel() {
@@ -164,12 +198,16 @@ public class UserUI extends Composite{
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				Welcome.showLoading();
+				System.out.println("Triggered selection change for " + selectionModel.getSelectedObject().getName());
 				getProjectTasksForUser(selectionModel.getSelectedObject());
 			}
 		});
 		return selectionModel;
 	}
 	
+	
+	/* When a new task is addded */
 	private ClickHandler btnNewTaskClick = new ClickHandler() {
 		@SuppressWarnings("unchecked")
 		@Override
@@ -178,6 +216,10 @@ public class UserUI extends Composite{
 			final DialogBox box = new DialogBox();
 			final TaskDisplay td = new TaskDisplay(cp);
 			
+			if(!cp.getOwner().equals(user)) {
+				td.forceOwner(user);
+			}
+			
 			td.btnCancel.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -185,24 +227,39 @@ public class UserUI extends Composite{
 				}
 			});
 			
+			/* Insert tasks */
 			td.btnSaveTask.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					try {
+						Welcome.showLoading();
 						CloudTask savedTask = td.getTask();
-						System.out.println(savedTask.toString());
-						cellList.getSelectionModel().setSelected(cp, true);
+						manageTaskService.addTask(savedTask, new AsyncCallback<CloudTask>() {
+							@Override
+							public void onSuccess(CloudTask savedTask) {
+								Welcome.hideLoading();
+								if(savedTask.getId() != null) {
+									noTasks.setVisible(false);
+									addTaskToContainer(savedTask);
+								}
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+								Welcome.hideLoading();
+								new MessageBox(caught.getMessage()).center();
+							}
+						});
 						box.hide();
 					} catch (Exception e) {
+						Welcome.hideLoading();
 						if(td.getErrorMessage() == null) {
 							e.printStackTrace();
 						} else { 
-							Window.alert(td.getErrorMessage());
+							new MessageBox(td.getErrorMessage()).center();
 						}
 					}
 				}
 			});
-			
 			box.add(td);
 			box.setGlassEnabled(true);
 			box.center();

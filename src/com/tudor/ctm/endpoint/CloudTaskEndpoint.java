@@ -138,7 +138,7 @@ public class CloudTaskEndpoint {
 		List<CloudTask> cloudtask = null;
 		try {
 			Query q = mgr.newQuery(CloudTask.class);
-			q.setFilter("project == project && owner == user");
+			q.setFilter("this.project == project && this.owner == user");
 			q.declareParameters("CloudProject project, CloudUser user");
 			List <CloudTask> r = (List<CloudTask>)q.execute(project, user);
 			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
@@ -166,23 +166,19 @@ public class CloudTaskEndpoint {
 		log.info("Entered");
 		CloudTask ct = null;
 		PersistenceManager mgr = getPersistenceManager();
-		Transaction tx = mgr.currentTransaction();
 		try {
 			if (cloudtask.getId()!=null && containsCloudTask(cloudtask)) {
 				throw new EntityExistsException("Object already exists");
 			}
-			tx.begin();
 			mgr.setDetachAllOnCommit(true);
 			mgr.makePersistent(cloudtask);
-			tx.commit();
+			cloudtask = mgr.detachCopy(cloudtask);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 
 		finally {
-			if (tx.isActive()) {
-		        tx.rollback();
-		        log.info("Exiting");
-		    }
+			mgr.close();
+			log.info("Exiting");
 		}
 		return cloudtask;
 	}
@@ -199,19 +195,13 @@ public class CloudTaskEndpoint {
 	public CloudTask updateCloudTask(CloudTask cloudtask) {
 		log.info("Entered");
 		PersistenceManager mgr = getPersistenceManager();
-		Transaction tx = mgr.currentTransaction();
 		try {
 			if (!containsCloudTask(cloudtask)) {
 				throw new EntityNotFoundException("Object does not exist");
 			}
-			tx.begin();
 			mgr.setDetachAllOnCommit(true);
 			mgr.makePersistent(cloudtask);
-			tx.commit();
 		} finally {
-			if (tx.isActive()) {
-		        tx.rollback();
-		    }
 			log.info("Exiting");
 		}
 		return cloudtask;
@@ -239,7 +229,6 @@ public class CloudTaskEndpoint {
 
 	private boolean containsCloudTask(CloudTask cloudtask) {
 		PersistenceManager mgr = getPersistenceManager();
-		Transaction tx = mgr.currentTransaction();
 		boolean contains = true;
 		try {
 			mgr.getObjectById(CloudTask.class, cloudtask.getId());

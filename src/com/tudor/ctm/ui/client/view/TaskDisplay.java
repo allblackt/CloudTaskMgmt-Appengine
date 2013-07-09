@@ -47,7 +47,6 @@ public class TaskDisplay extends Composite {
 		for (CloudUser user : project.getMembers()) {
 			taskOwner.addItem(user.getEmail(), user.getEmail());
 		}
-		
 	}
 	
 	public TaskDisplay(CloudTask task, CloudProject project) {
@@ -85,6 +84,13 @@ public class TaskDisplay extends Composite {
 			.project(project)
 			.owner(project.getMembers().get(taskOwner.getSelectedIndex()))
 			.build();
+	}
+	
+	public void forceOwner(CloudUser user) {
+		if(project.getMembers().contains(user)) {
+			taskOwner.clear();
+			taskOwner.addItem(user.getEmail(), user.getEmail());
+		}
 	}
 	
 	public String getErrorMessage() {

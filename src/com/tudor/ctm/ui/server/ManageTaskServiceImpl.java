@@ -15,9 +15,6 @@ import com.tudor.ctm.ui.shared.CloudUser;
 public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		ManageTaskService {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 360822648630248115L;
 
 	@Override
@@ -56,6 +53,20 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		} else {
 			return new CloudTaskEndpoint().getUserTasks(project, user);
 		}
+	}
+
+	@Override
+	public CloudTask addTask(CloudTask task) {
+		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
+		endpoint.insertCloudTask(task);
+		return task;
+	}
+
+	@Override
+	public CloudTask editTask(CloudTask task) {
+		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
+		endpoint.updateCloudTask(task);
+		return task;
 	}
 
 }
