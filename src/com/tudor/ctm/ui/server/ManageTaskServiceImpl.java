@@ -67,4 +67,11 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		return task;
 	}
 
+	@Override
+	public boolean removeTask(CloudTask task) {
+		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
+		endpoint.removeCloudTask(task.getId());
+		return true;
+	}
+
 }

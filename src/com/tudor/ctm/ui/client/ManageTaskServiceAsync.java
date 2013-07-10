@@ -23,4 +23,6 @@ public interface ManageTaskServiceAsync {
 
 	void editTask(CloudTask task, AsyncCallback<CloudTask> callback);
 
+	void removeTask(CloudTask task, AsyncCallback<Boolean> callback);
+
 }

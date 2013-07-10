@@ -2,6 +2,8 @@ package com.tudor.ctm.ui.client.view;
 
 import java.util.List;
 
+import sun.awt.CausedFocusEvent.Cause;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +33,7 @@ import com.tudor.ctm.ui.client.res.CTMRes;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
+import com.google.gwt.user.client.ui.Label;
 
 public class UserUI extends Composite{
 
@@ -41,6 +44,7 @@ public class UserUI extends Composite{
 	private static GetUserDataAsync getUserData = GWT.create(GetUserData.class);
 	private static ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
 	private CloudUser user;
+	private CloudProject selectedProject;
 	
 	@UiField(provided=true) 
 	CellList<CloudProject> cellList = new CellList<CloudProject>(new AbstractCell<CloudProject>(){
@@ -60,6 +64,7 @@ public class UserUI extends Composite{
 	@UiField VerticalPanel tasksContainer;
 	@UiField Button btnNewTask;
 	@UiField HTML noTasks;
+	@UiField Label lblWarning;
 
 	interface UserViewUiBinder extends UiBinder<Widget, UserUI> {
 	}
@@ -82,9 +87,15 @@ public class UserUI extends Composite{
 				Welcome.hideLoading();
 				if(projects != null)
 					System.out.println(projects.toString());
-					if(projects == null || projects.size() == 0) {
+				if(projects == null || projects.size() == 0) {
+					btnNewTask.setVisible(false);
+					lblWarning.setVisible(true);
 					return;
 				}
+				
+				btnNewTask.setVisible(true);
+				lblWarning.setVisible(false);
+				
 				cellList.setRowData(projects);
 				cellList.getSelectionModel().setSelected(projects.get(0), true);
 			}
@@ -112,7 +123,7 @@ public class UserUI extends Composite{
 		}
 	}
 	
-	private void addTaskToContainer(CloudTask ct) {
+	private void addTaskToContainer(final CloudTask ct) {
 		/* Skip adding the task in view if the user isn't the owner of the project / task */
 		if( !ct.getOwner().equals(user) && !ct.getProject().getOwner().equals(user)) {
 			return;
@@ -120,6 +131,38 @@ public class UserUI extends Composite{
 		
 		final TaskDisplay td = new TaskDisplay(ct, ct.getProject());
 		final DisclosurePanel dc = new DisclosurePanel(ct.getTaskTitle() + " - " + ct.getRemainingTime() + " hours left.");
+		
+		if(selectedProject.getOwner().equals(user)) {
+			td.btnDelete.setVisible(true);
+			td.btnDelete.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					new ConfirmBox("Are you sure you want to delete this task?").yesHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							manageTaskService.removeTask(ct, new AsyncCallback<Boolean>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									new MessageBox(caught.getMessage()).center();
+								}
+
+								@Override
+								public void onSuccess(Boolean result) {
+									new MessageBox("Task was deleted.").center();
+									dc.removeFromParent();
+								}
+							});
+							
+						}
+					}).center();
+					
+				}
+			});
+		}
+		
 		dc.setOpen(false);
 		dc.setAnimationEnabled(true);
 		dc.setContent(td);
@@ -196,6 +239,7 @@ public class UserUI extends Composite{
 			public void onSelectionChange(SelectionChangeEvent event) {
 				Welcome.showLoading();
 				System.out.println("Triggered selection change for " + selectionModel.getSelectedObject().getName());
+				selectedProject = selectionModel.getSelectedObject();
 				getProjectTasksForUser(selectionModel.getSelectedObject());
 			}
 		});
@@ -205,14 +249,13 @@ public class UserUI extends Composite{
 	
 	/* When a new task is addded */
 	private ClickHandler btnNewTaskClick = new ClickHandler() {
-		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(ClickEvent event) {
-			final CloudProject cp = ((SingleSelectionModel<CloudProject>)cellList.getSelectionModel()).getSelectedObject();
+			//final CloudProject cp = ((SingleSelectionModel<CloudProject>)cellList.getSelectionModel()).getSelectedObject();
 			final DialogBox box = new DialogBox();
-			final TaskDisplay td = new TaskDisplay(cp);
+			final TaskDisplay td = new TaskDisplay(selectedProject);
 			
-			if(!cp.getOwner().equals(user)) {
+			if(!selectedProject.getOwner().equals(user)) {
 				td.forceOwner(user);
 			}
 			

@@ -5,13 +5,7 @@
 		
 	</ui:style>
 	<g:HTMLPanel>
-		<g:TabPanel ui:field="tabPanel">
-<!-- 			<g:Tab text="Admin" ui:field="adminTab" > -->
-<!-- 				<g:FlowPanel ui:field="adminPanel"/> -->
-<!-- 			</g:Tab> -->
-<!-- 			<g:Tab text="Projects"> -->
-<!-- 				<g:FlowPanel ui:field="projectsPanel"/> -->
-<!-- 			</g:Tab> -->
+		<g:TabPanel ui:field="tabPanel" width="100%">
 		</g:TabPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
