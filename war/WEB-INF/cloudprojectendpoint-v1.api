@@ -1,0 +1,237 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://ctm-tudor.appspot.com/_ah/api",
+  "name" : "cloudprojectendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://ctm-tudor.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "methods" : {
+    "cloudprojectendpoint.updateCloudProject" : {
+      "path" : "updatecloudproject",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.updateCloudProject",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudprojectendpoint.insertCloudProject" : {
+      "path" : "insertcloudproject",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.insertCloudProject",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudprojectendpoint.listCloudProject" : {
+      "path" : "cloudproject",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudprojectendpoint.getCloudProject" : {
+      "path" : "getcloudproject",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudprojectendpoint.getuserprojects" : {
+      "path" : "getuserprojects",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjects",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "CloudProject" : {
+        "id" : "CloudProject",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "owner" : {
+            "$ref" : "CloudUser"
+          },
+          "members" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudUser"
+            }
+          }
+        }
+      },
+      "CloudUser" : {
+        "id" : "CloudUser",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "logoutURL" : {
+            "type" : "string"
+          },
+          "isLoggedIn" : {
+            "type" : "boolean"
+          },
+          "isAdmin" : {
+            "type" : "boolean"
+          },
+          "deviceKeys" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "CollectionResponse_CloudProject" : {
+        "id" : "CollectionResponse_CloudProject",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudProject"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CloudProjectCollection" : {
+        "id" : "CloudProjectCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudProject"
+            }
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.updateCloudProject" : {
+        "request" : {
+          "$ref" : "CloudProject"
+        },
+        "response" : {
+          "$ref" : "CloudProject"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.insertCloudProject" : {
+        "request" : {
+          "$ref" : "CloudProject"
+        },
+        "response" : {
+          "$ref" : "CloudProject"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudProject"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject" : {
+        "response" : {
+          "$ref" : "CloudProject"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjects" : {
+        "request" : {
+          "$ref" : "CloudUser"
+        },
+        "response" : {
+          "$ref" : "CloudProjectCollection"
+        }
+      }
+    }
+  }
+}

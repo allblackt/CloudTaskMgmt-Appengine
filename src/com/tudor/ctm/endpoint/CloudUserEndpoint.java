@@ -12,16 +12,20 @@ import javax.jdo.Transaction;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+import org.json.simple.JSONObject;
+
+import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
+import com.google.api.server.spi.config.ApiSerializationProperty;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.util.PMF;
 
-@Api(name = "clouduserendpoint", namespace = @ApiNamespace(ownerDomain = "tudor.com", ownerName = "tudor.com", packagePath = "ctm.ui.shared"))
+@Api(name = "clouduserendpoint" )
 public class CloudUserEndpoint {
 
 	/**
@@ -60,7 +64,7 @@ public class CloudUserEndpoint {
 			if (cursor != null)
 				cursorString = cursor.toWebSafeString();
 
-			// Tight loop for fetching all entities from datastore and accomodate
+			// Tight loop for fetching all entities from datastore and accomodate 
 			// for lazy fetch.
 			for (CloudUser obj : execute)
 				;
@@ -73,6 +77,7 @@ public class CloudUserEndpoint {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ApiMethod(name="getallusers", httpMethod="GET", path="getallusers")
 	public List<CloudUser> getAllUsers() {
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -131,13 +136,16 @@ public class CloudUserEndpoint {
 		return clouduser;
 	}
 	
-	@ApiMethod(name="registerDeviceForUser", httpMethod="POST", path="registerDeviceKey")
-	public boolean registerDeviceForUser(@Named("email") String email, @Named("deviceKey") String deviceKey) {
+	@ApiMethod(name="registerdeviceforuser", httpMethod=HttpMethod.POST, path="registerdeviceforuser")
+	@ApiSerializationProperty(ignored = AnnotationBoolean.TRUE)
+	public JSONObject registerDeviceForUser(@Named("email") String email, @Named("deviceKey") String deviceKey) {
 		CloudUser user = null;
+		JSONObject j = new JSONObject();
 		try {
 			user = getCloudUserByEmail(email);
 			if(user.getDeviceKeys() != null && user.getDeviceKeys().contains(deviceKey)) {
-				return true;
+				j.put("status", "OK");
+				return j;
 			} else {
 				if(user.getDeviceKeys() == null) {
 					user.setDeviceKeys(Arrays.asList(deviceKey));
@@ -148,12 +156,13 @@ public class CloudUserEndpoint {
 			updateCloudUser(user);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			j.put("status", "NOTOK");
+			return j;
 		}
-		return true;
-	}
+		j.put("status", "OK");
+		return j;
+	} 
 	
-
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity already
 	 * exists in the datastore, an exception is thrown.
@@ -162,18 +171,23 @@ public class CloudUserEndpoint {
 	 * @param clouduser the entity to be inserted.
 	 * @return The inserted entity.
 	 */
-	@ApiMethod(name = "insertCloudUser")
+	@ApiMethod(name = "insertCloudUser", path="insertclouduser", httpMethod=HttpMethod.POST)
 	public CloudUser insertCloudUser(CloudUser clouduser) {
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction tx = mgr.currentTransaction();
+		CloudUser existing = null;
 		try {
 			tx.begin();
 			mgr.setDetachAllOnCommit(true);
-			if ( clouduser.getId() != null && containsCloudUser(clouduser)) {
-				throw new EntityExistsException("Object already exists");
+			existing = getCloudUserByEmail(clouduser.getEmail());
+			if (existing != null) {
+				System.out.println("exiting user:" + existing);
+				clouduser = existing;
+			} else { 
+				System.out.println("new user" + clouduser);
+				mgr.makePersistent(clouduser);
+				tx.commit();
 			}
-			mgr.makePersistent(clouduser);
-			tx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
@@ -208,25 +222,6 @@ public class CloudUserEndpoint {
 		return clouduser;
 	}
 
-	/**
-	 * This method removes the entity with primary key id.
-	 * It uses HTTP DELETE method.
-	 *
-	 * @param id the primary key of the entity to be deleted.
-	 * @return The deleted entity.
-	 */
-	@ApiMethod(name = "removeCloudUser")
-	public CloudUser removeCloudUser(@Named("id") Long id) {
-		PersistenceManager mgr = getPersistenceManager();
-		CloudUser clouduser = null;
-		try {
-			clouduser = mgr.getObjectById(CloudUser.class, id);
-			mgr.deletePersistent(clouduser);
-		} finally {
-			mgr.close();
-		}
-		return clouduser;
-	}
 
 	private boolean containsCloudUser(CloudUser clouduser) {
 		PersistenceManager mgr = getPersistenceManager();

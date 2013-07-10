@@ -1,0 +1,269 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://ctm-tudor.appspot.com/_ah/api",
+  "name" : "clouduserendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://ctm-tudor.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "methods" : {
+    "clouduserendpoint.getallusers" : {
+      "path" : "getallusers",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.getAllUsers",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.getCloudUser" : {
+      "path" : "clouduser/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.getCloudUser",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.updateCloudUser" : {
+      "path" : "clouduser",
+      "httpMethod" : "PUT",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.updateCloudUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.getCloudUserByEmail" : {
+      "path" : "clouduserbyemail",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.getCloudUserByEmail",
+      "request" : {
+        "parameters" : {
+          "email" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.listCloudUser" : {
+      "path" : "clouduser",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.listCloudUser",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.insertCloudUser" : {
+      "path" : "insertclouduser",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.insertCloudUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.registerdeviceforuser" : {
+      "path" : "registerdeviceforuser",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.registerDeviceForUser",
+      "request" : {
+        "parameters" : {
+          "email" : {
+            "type" : "string",
+            "required" : true
+          },
+          "deviceKey" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "CloudUser" : {
+        "id" : "CloudUser",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "logoutURL" : {
+            "type" : "string"
+          },
+          "isLoggedIn" : {
+            "type" : "boolean"
+          },
+          "isAdmin" : {
+            "type" : "boolean"
+          },
+          "deviceKeys" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "CloudUserCollection" : {
+        "id" : "CloudUserCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudUser"
+            }
+          }
+        }
+      },
+      "CollectionResponse_CloudUser" : {
+        "id" : "CollectionResponse_CloudUser",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "CloudUser"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JsonMap" : {
+        "id" : "JsonMap",
+        "type" : "object"
+      }
+    },
+    "methods" : {
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.getAllUsers" : {
+        "response" : {
+          "$ref" : "CloudUserCollection"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.getCloudUser" : {
+        "response" : {
+          "$ref" : "CloudUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.updateCloudUser" : {
+        "request" : {
+          "$ref" : "CloudUser"
+        },
+        "response" : {
+          "$ref" : "CloudUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.getCloudUserByEmail" : {
+        "response" : {
+          "$ref" : "CloudUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.listCloudUser" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.insertCloudUser" : {
+        "request" : {
+          "$ref" : "CloudUser"
+        },
+        "response" : {
+          "$ref" : "CloudUser"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.registerDeviceForUser" : {
+        "response" : {
+          "$ref" : "JsonMap"
+        }
+      }
+    }
+  }
+}

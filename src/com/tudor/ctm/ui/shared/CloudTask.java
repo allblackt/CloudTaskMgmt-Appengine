@@ -3,7 +3,7 @@ package com.tudor.ctm.ui.shared;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -20,9 +20,15 @@ public class CloudTask implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
+	@Persistent
+	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
 	private String taskTitle;
+	@Persistent
+	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
 	private String taskDescription;
 	private Date taskDueDate;
+	@Persistent
+	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
 	private int remainingTime;
 	
 	@Persistent(defaultFetchGroup = "true")

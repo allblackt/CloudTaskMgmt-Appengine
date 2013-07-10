@@ -3,12 +3,14 @@ package com.tudor.ctm.ui.shared;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.Unique;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable = "true")
 public class CloudUser implements Serializable {
@@ -24,7 +26,11 @@ public class CloudUser implements Serializable {
 	private String logoutURL;
 	@NotPersistent
 	private Boolean isLoggedIn;
+	@Persistent
+	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
 	private Boolean isAdmin;
+	@Persistent
+	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
 	private List<String> deviceKeys;
 
 	public CloudUser() {

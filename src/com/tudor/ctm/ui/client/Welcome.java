@@ -42,10 +42,7 @@ public class Welcome implements EntryPoint {
 	private CloudUser loggedUser;
 	private DialogBox addTaskBox;
 	
-	private final ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
-	private final GetUserTasksAsync getUserTasks = GWT.create(GetUserTasks.class);
 	private final GetUserDataAsync getUserData = GWT.create(GetUserData.class);
-	private final ManageProjectAsync manageProject = GWT.create(ManageProject.class);
 	private WelcomeUI ui;
 	
 	

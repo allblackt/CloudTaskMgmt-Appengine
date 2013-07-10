@@ -6,8 +6,6 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.tudor.ctm.endpoint.CloudTaskEndpoint;
 import com.tudor.ctm.ui.client.ManageTaskService;
-import com.tudor.ctm.ui.shared.CTMException;
-import com.tudor.ctm.ui.shared.CTMUser;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
@@ -19,7 +17,7 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public CloudTask addTask(String taskTitle, String taskDescription,
-			Date taskDueDate, String ownerEmail) throws CTMException {
+			Date taskDueDate, String ownerEmail) {
 		CloudUser owner = new CloudUser();
 		owner.setEmail(ownerEmail);
 		CloudTask ct = new CloudTask(taskTitle, taskDescription, taskDueDate, owner);
@@ -35,8 +33,7 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public CloudTask editTask(Long taskId, String taskTitle,
-			String taskDescription, Date taskDueDate, CloudUser owner)
-			throws CTMException {
+			String taskDescription, Date taskDueDate, CloudUser owner) {
 		CloudTask ct = new CloudTask.Builder().id(taskId).taskTitle(taskTitle).taskDescription(taskDescription).taskDueDate(taskDueDate).owner(owner).build();
 		
 		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
@@ -51,7 +48,7 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 		if(project.getOwner().equals(user)) {
 			return new CloudTaskEndpoint().getProjectTasks(project);
 		} else {
-			return new CloudTaskEndpoint().getUserTasks(project, user);
+			return new CloudTaskEndpoint().getUserTasks(project.getId(), user.getId());
 		}
 	}
 
@@ -59,6 +56,7 @@ public class ManageTaskServiceImpl extends RemoteServiceServlet implements
 	public CloudTask addTask(CloudTask task) {
 		CloudTaskEndpoint endpoint = new CloudTaskEndpoint();
 		endpoint.insertCloudTask(task);
+		System.out.println("Added task: " + task);
 		return task;
 	}
 

@@ -20,7 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-@Api(name = "deviceinfoendpoint", namespace = @ApiNamespace(ownerDomain = "tudor.com", ownerName = "tudor.com", packagePath = "ctm.dm"))
+@Api(name = "deviceinfoendpoint" )
 public class DeviceInfoEndpoint {
 
 	/**

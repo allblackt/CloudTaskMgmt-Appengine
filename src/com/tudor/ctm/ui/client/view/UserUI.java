@@ -1,7 +1,6 @@
 package com.tudor.ctm.ui.client.view;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -11,9 +10,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -31,9 +30,7 @@ import com.tudor.ctm.ui.client.Welcome;
 import com.tudor.ctm.ui.client.res.CTMRes;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
-import com.tudor.ctm.ui.shared.FakeData;
 import com.tudor.ctm.ui.shared.CloudUser;
-import com.google.gwt.user.client.ui.Button;
 
 public class UserUI extends Composite{
 
@@ -44,7 +41,6 @@ public class UserUI extends Composite{
 	private static GetUserDataAsync getUserData = GWT.create(GetUserData.class);
 	private static ManageTaskServiceAsync manageTaskService = GWT.create(ManageTaskService.class);
 	private CloudUser user;
-	private static final Logger log = Logger.getLogger(UserUI.class.getName());
 	
 	@UiField(provided=true) 
 	CellList<CloudProject> cellList = new CellList<CloudProject>(new AbstractCell<CloudProject>(){

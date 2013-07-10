@@ -18,7 +18,6 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
-import com.tudor.ctm.ui.shared.FakeData;
 
 public class TaskDisplay extends Composite {
 
@@ -75,6 +74,14 @@ public class TaskDisplay extends Composite {
 		
 		Long id = taskId.getValue().trim().length() == 0 ? null : Long.parseLong(taskId.getValue().trim());
 		
+		CloudUser owner = null;
+		for (CloudUser user : project.getMembers()) {
+			if(user.getEmail().equalsIgnoreCase(taskOwner.getValue(taskOwner.getSelectedIndex()))) {
+				owner = user;
+				break;
+			}
+		}
+
 		return new CloudTask.Builder()
 			.id(id)
 			.taskDescription(taskDescription.getValue().trim())
@@ -82,11 +89,12 @@ public class TaskDisplay extends Composite {
 			.remainingTime(timeRemaining.getValue())
 			.taskDueDate(dueDate.getValue())
 			.project(project)
-			.owner(project.getMembers().get(taskOwner.getSelectedIndex()))
+			.owner(owner)
 			.build();
 	}
 	
 	public void forceOwner(CloudUser user) {
+		System.out.println("forcing owner" + user);
 		if(project.getMembers().contains(user)) {
 			taskOwner.clear();
 			taskOwner.addItem(user.getEmail(), user.getEmail());

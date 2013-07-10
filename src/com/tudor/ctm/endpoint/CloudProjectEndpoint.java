@@ -5,6 +5,7 @@ import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.util.PMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
@@ -22,7 +23,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
 
-@Api(name = "cloudprojectendpoint", namespace = @ApiNamespace(ownerDomain = "tudor.com", ownerName = "tudor.com", packagePath = "ctm.ui.shared"))
+@Api(name = "cloudprojectendpoint" )
 public class CloudProjectEndpoint {
 
 	/**
@@ -80,7 +81,7 @@ public class CloudProjectEndpoint {
 	 * @param id the primary key of the java bean.
 	 * @return The entity with primary key id.
 	 */
-	@ApiMethod(name = "getCloudProject")
+	@ApiMethod(name = "getCloudProject", path="getcloudproject", httpMethod=HttpMethod.GET)
 	public CloudProject getCloudProject(@Named("id") Long id) {
 		PersistenceManager mgr = getPersistenceManager();
 		CloudProject cloudproject = null;
@@ -93,6 +94,7 @@ public class CloudProjectEndpoint {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ApiMethod(name="getuserprojects", path="getuserprojects", httpMethod=HttpMethod.GET)
 	public List<CloudProject> getUserProjects(CloudUser user) {
 		List<CloudProject> projects = null;
 		PersistenceManager mgr = null;
@@ -120,7 +122,7 @@ public class CloudProjectEndpoint {
 	 * @param cloudproject the entity to be inserted.
 	 * @return The inserted entity.
 	 */
-	@ApiMethod(name = "insertCloudProject")
+	@ApiMethod(name = "insertCloudProject", path="insertcloudproject", httpMethod=HttpMethod.POST)
 	public CloudProject insertCloudProject(CloudProject cloudproject) {
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction tx = mgr.currentTransaction();
@@ -149,7 +151,7 @@ public class CloudProjectEndpoint {
 	 * @param cloudproject the entity to be updated.
 	 * @return The updated entity.
 	 */
-	@ApiMethod(name = "updateCloudProject")
+	@ApiMethod(name = "updateCloudProject", path="updatecloudproject", httpMethod=HttpMethod.POST)
 	public CloudProject updateCloudProject(CloudProject cloudproject) {
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -157,26 +159,6 @@ public class CloudProjectEndpoint {
 				throw new EntityNotFoundException("Object does not exist");
 			}
 			mgr.makePersistent(cloudproject);
-		} finally {
-			mgr.close();
-		}
-		return cloudproject;
-	}
-
-	/**
-	 * This method removes the entity with primary key id.
-	 * It uses HTTP DELETE method.
-	 *
-	 * @param id the primary key of the entity to be deleted.
-	 * @return The deleted entity.
-	 */
-	@ApiMethod(name = "removeCloudProject")
-	public CloudProject removeCloudProject(@Named("id") Long id) {
-		PersistenceManager mgr = getPersistenceManager();
-		CloudProject cloudproject = null;
-		try {
-			cloudproject = mgr.getObjectById(CloudProject.class, id);
-			mgr.deletePersistent(cloudproject);
 		} finally {
 			mgr.close();
 		}

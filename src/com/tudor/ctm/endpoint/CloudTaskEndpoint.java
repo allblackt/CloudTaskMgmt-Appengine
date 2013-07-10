@@ -8,12 +8,12 @@ import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import javax.jdo.Transaction;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
@@ -22,7 +22,7 @@ import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
 import com.tudor.ctm.util.PMF;
 
-@Api(name = "cloudtasks", version="v1" )
+@Api(name = "cloudtaskendpoint", version="v1" )
 public class CloudTaskEndpoint {
 
 	private static final Logger log = Logger.getLogger(CloudTaskEndpoint.class.getName());
@@ -35,7 +35,7 @@ public class CloudTaskEndpoint {
 	 * persisted and a cursor to the next page.
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
-	@ApiMethod(name = "listCloudTask", httpMethod="GET", path="listcloudtasks")
+	@ApiMethod(name = "listcloudtasks", httpMethod="GET", path="listcloudtasks")
 	public CollectionResponse<CloudTask> listCloudTask(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
@@ -81,7 +81,7 @@ public class CloudTaskEndpoint {
 	 * @param id the primary key of the java bean.
 	 * @return The entity with primary key id.
 	 */
-	@ApiMethod(name = "getCloudTask")
+	@ApiMethod(name = "getcloudtask", path="getcloudtask", httpMethod=HttpMethod.GET)
 	public CloudTask getCloudTask(@Named("id") Long id) {
 		PersistenceManager mgr = getPersistenceManager();
 		CloudTask cloudtask = null;
@@ -93,27 +93,9 @@ public class CloudTaskEndpoint {
 		return cloudtask;
 	}
 	
+
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "getUserTasks", path="getUserTasks/{email}", httpMethod="GET")
-	public List<CloudTask> getUserTasks(@Named("email") String email) {
-		PersistenceManager mgr = getPersistenceManager();
-		List<CloudTask> cloudtask = null;
-		try {
-			Query q = mgr.newQuery(CloudTask.class);
-			q.setFilter("owner == email");
-			q.declareParameters("String email");
-			List <CloudTask> r = (List<CloudTask>)q.execute(email);
-			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
-		} finally {
-			if(!mgr.isClosed())
-			{
-				mgr.close();
-			}
-		}
-		return cloudtask;
-	}
-	
-	@SuppressWarnings("unchecked")
+	@ApiMethod(name="getprojecttasks", path="getprojecttasks", httpMethod=HttpMethod.GET)
 	public List<CloudTask> getProjectTasks(CloudProject project) {
 		PersistenceManager mgr = getPersistenceManager();
 		List<CloudTask> cloudtask = null;
@@ -133,13 +115,19 @@ public class CloudTaskEndpoint {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<CloudTask> getUserTasks(CloudProject project, CloudUser user) {
+	@ApiMethod(name="getusertasks", path="getusertasks/{userid}/{projectid}", httpMethod=HttpMethod.GET)
+	public List<CloudTask> getUserTasks(@Named("projectid") Long projectid, @Named("userid") Long userid) {
+		log.info("Entered");
 		PersistenceManager mgr = getPersistenceManager();
 		List<CloudTask> cloudtask = null;
+		CloudProject project = null;
+		CloudUser user = null;
 		try {
+			project = mgr.getObjectById(CloudProject.class, projectid);
+			user = mgr.getObjectById(CloudUser.class, userid);
 			Query q = mgr.newQuery(CloudTask.class);
-			q.setFilter("this.project == project && this.owner == user");
-			q.declareParameters("CloudProject project, CloudUser user");
+			q.setFilter("project == projectparam && owner == userparam");
+			q.declareParameters("CloudProject projectparam, CloudUser userparam");
 			List <CloudTask> r = (List<CloudTask>)q.execute(project, user);
 			cloudtask = (List<CloudTask>) mgr.detachCopyAll(r);
 		} catch (Exception e) {
@@ -149,6 +137,7 @@ public class CloudTaskEndpoint {
 			{
 				mgr.close();
 			}
+			log.info("Exiting");
 		}
 		return cloudtask;
 	}
@@ -161,7 +150,7 @@ public class CloudTaskEndpoint {
 	 * @param cloudtask the entity to be inserted.
 	 * @return The inserted entity.
 	 */
-	@ApiMethod(name = "insertCloudTask")
+	@ApiMethod(name = "insertCloudTask", path="insertcloudtask", httpMethod=HttpMethod.POST)
 	public CloudTask insertCloudTask(CloudTask cloudtask) {
 		log.info("Entered");
 		CloudTask ct = null;
@@ -191,7 +180,7 @@ public class CloudTaskEndpoint {
 	 * @param cloudtask the entity to be updated.
 	 * @return The updated entity.
 	 */
-	@ApiMethod(name = "updateCloudTask")
+	@ApiMethod(name = "updateCloudTask", path="updatecloudtask", httpMethod=HttpMethod.POST)
 	public CloudTask updateCloudTask(CloudTask cloudtask) {
 		log.info("Entered");
 		PersistenceManager mgr = getPersistenceManager();
