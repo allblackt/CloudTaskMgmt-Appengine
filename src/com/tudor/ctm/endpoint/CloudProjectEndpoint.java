@@ -132,6 +132,10 @@ public class CloudProjectEndpoint {
 			if (cloudproject.getId() != null && containsCloudProject(cloudproject)) {
 				throw new EntityExistsException("Object already exists");
 			}
+			//Owner is a member of the project. Always
+			if(!cloudproject.getMembers().contains(cloudproject.getOwner())) {
+				cloudproject.getMembers().add(cloudproject.getOwner());
+			}
 			mgr.makePersistent(cloudproject);
 			tx.commit();
 		} finally {
@@ -157,6 +161,10 @@ public class CloudProjectEndpoint {
 		try {
 			if (!containsCloudProject(cloudproject)) {
 				throw new EntityNotFoundException("Object does not exist");
+			}
+			//Owner is a member of the project. Always
+			if(!cloudproject.getMembers().contains(cloudproject.getOwner())) {
+				cloudproject.getMembers().add(cloudproject.getOwner());
 			}
 			mgr.makePersistent(cloudproject);
 		} finally {

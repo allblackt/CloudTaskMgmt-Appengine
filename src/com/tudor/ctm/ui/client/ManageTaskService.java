@@ -17,6 +17,8 @@ public interface ManageTaskService extends RemoteService {
 	
 	public CloudTask editTask(CloudTask task);
 	
+	public boolean removeTask(CloudTask task);
+	
 	public CloudTask editTask(Long taskId, String taskTitle, String taskDescription,
 			Date taskDueDate, CloudUser owner);
 	

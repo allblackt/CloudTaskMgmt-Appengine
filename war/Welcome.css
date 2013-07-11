@@ -27,3 +27,7 @@ top:0;
     top: 50%;  // edit these values to give you
     left: 50%; // the positioning you're looking for.
 }
+
+.float_right {
+	float : right;
+}

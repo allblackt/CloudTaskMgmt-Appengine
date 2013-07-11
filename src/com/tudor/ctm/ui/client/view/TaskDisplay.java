@@ -31,6 +31,7 @@ public class TaskDisplay extends Composite {
 	@UiField Hidden taskId;
 	@UiField Button btnSaveTask;
 	@UiField Button btnCancel;
+	@UiField Button btnDelete;
 	private String errorMessage = new String();
 	private CloudProject project;
 
@@ -46,6 +47,7 @@ public class TaskDisplay extends Composite {
 		for (CloudUser user : project.getMembers()) {
 			taskOwner.addItem(user.getEmail(), user.getEmail());
 		}
+		btnDelete.setVisible(false);
 	}
 	
 	public TaskDisplay(CloudTask task, CloudProject project) {

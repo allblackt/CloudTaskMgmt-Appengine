@@ -25,5 +25,6 @@
 				</g:VerticalPanel>
 			</g:Dock>
 		</g:DockPanel>
+		<g:Label text="Please contact an administrator for associating you with a project." ui:field="lblWarning"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

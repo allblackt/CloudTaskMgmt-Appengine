@@ -54,6 +54,26 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "cloudprojectendpoint.getCloudProject" : {
+      "path" : "getcloudproject",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "cloudprojectendpoint.listCloudProject" : {
       "path" : "cloudproject",
       "httpMethod" : "GET",
@@ -70,26 +90,6 @@
           "limit" : {
             "type" : "int32",
             "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "cloudprojectendpoint.getCloudProject" : {
-      "path" : "getcloudproject",
-      "httpMethod" : "GET",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
           }
         },
         "body" : "empty"
@@ -214,14 +214,14 @@
           "$ref" : "CloudProject"
         }
       },
-      "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject" : {
-        "response" : {
-          "$ref" : "CollectionResponse_CloudProject"
-        }
-      },
       "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject" : {
         "response" : {
           "$ref" : "CloudProject"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudProject"
         }
       },
       "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjects" : {
