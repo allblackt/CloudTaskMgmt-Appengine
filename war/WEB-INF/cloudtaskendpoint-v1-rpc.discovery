@@ -1,0 +1,293 @@
+{
+ "kind": "discovery#rpcDescription",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/8W_ayXddXyWAxnz-LXmvRcOU0yo\"",
+ "discoveryVersion": "v1",
+ "id": "cloudtaskendpoint:v1",
+ "name": "cloudtaskendpoint",
+ "version": "v1",
+ "description": "This is an API",
+ "ownerDomain": "google.com",
+ "ownerName": "Google",
+ "icons": {
+  "x16": "http://www.google.com/images/icons/product/search-16.gif",
+  "x32": "http://www.google.com/images/icons/product/search-32.gif"
+ },
+ "protocol": "rpc",
+ "rootUrl": "https://ctm-tudor.appspot.com/_ah/api/",
+ "rpcUrl": "https://ctm-tudor.appspot.com/_ah/api/rpc",
+ "rpcPath": "/_ah/api/rpc",
+ "parameters": {
+  "alt": {
+   "type": "string",
+   "description": "Data format for the response.",
+   "default": "json",
+   "enum": [
+    "json"
+   ],
+   "enumDescriptions": [
+    "Responses with Content-Type of application/json"
+   ],
+   "location": "query"
+  },
+  "fields": {
+   "type": "string",
+   "description": "Selector specifying which fields to include in a partial response.",
+   "location": "query"
+  },
+  "key": {
+   "type": "string",
+   "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+   "location": "query"
+  },
+  "oauth_token": {
+   "type": "string",
+   "description": "OAuth 2.0 token for the current user.",
+   "location": "query"
+  },
+  "prettyPrint": {
+   "type": "boolean",
+   "description": "Returns response with indentations and line breaks.",
+   "default": "true",
+   "location": "query"
+  },
+  "quotaUser": {
+   "type": "string",
+   "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. Overrides userIp if both are provided.",
+   "location": "query"
+  },
+  "userIp": {
+   "type": "string",
+   "description": "IP address of the site where the request originates. Use this if you want to enforce per-user limits.",
+   "location": "query"
+  }
+ },
+ "schemas": {
+  "CloudProject": {
+   "id": "CloudProject",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "members": {
+     "type": "array",
+     "items": {
+      "$ref": "CloudUser"
+     }
+    },
+    "name": {
+     "type": "string"
+    },
+    "owner": {
+     "$ref": "CloudUser"
+    }
+   }
+  },
+  "CloudTask": {
+   "id": "CloudTask",
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "owner": {
+     "$ref": "CloudUser"
+    },
+    "project": {
+     "$ref": "CloudProject"
+    },
+    "remainingTime": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "taskDescription": {
+     "type": "string"
+    },
+    "taskDueDate": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "taskTitle": {
+     "type": "string"
+    }
+   }
+  },
+  "CloudTaskCollection": {
+   "id": "CloudTaskCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "CloudTask"
+     }
+    }
+   }
+  },
+  "CloudUser": {
+   "id": "CloudUser",
+   "type": "object",
+   "properties": {
+    "deviceKeys": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "email": {
+     "type": "string"
+    },
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "isAdmin": {
+     "type": "boolean"
+    },
+    "isLoggedIn": {
+     "type": "boolean"
+    },
+    "logoutURL": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    }
+   }
+  },
+  "CollectionResponse_CloudTask": {
+   "id": "CollectionResponse_CloudTask",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "CloudTask"
+     }
+    },
+    "nextPageToken": {
+     "type": "string"
+    }
+   }
+  }
+ },
+ "methods": {
+  "cloudtaskendpoint.getcloudtask": {
+   "id": "cloudtaskendpoint.getcloudtask",
+   "allowGet": true,
+   "parameters": {
+    "id": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    }
+   },
+   "parameterOrder": [
+    "id"
+   ],
+   "returns": {
+    "$ref": "CloudTask"
+   }
+  },
+  "cloudtaskendpoint.getprojecttasks": {
+   "id": "cloudtaskendpoint.getprojecttasks",
+   "allowGet": true,
+   "parameters": {
+    "resource": {
+     "$ref": "CloudProject"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "CloudTaskCollection"
+   }
+  },
+  "cloudtaskendpoint.getusertasks": {
+   "id": "cloudtaskendpoint.getusertasks",
+   "allowGet": true,
+   "parameters": {
+    "projectid": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    },
+    "userid": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    }
+   },
+   "parameterOrder": [
+    "userid",
+    "projectid"
+   ],
+   "returns": {
+    "$ref": "CloudTaskCollection"
+   }
+  },
+  "cloudtaskendpoint.insertCloudTask": {
+   "id": "cloudtaskendpoint.insertCloudTask",
+   "parameters": {
+    "resource": {
+     "$ref": "CloudTask"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "CloudTask"
+   }
+  },
+  "cloudtaskendpoint.listcloudtasks": {
+   "id": "cloudtaskendpoint.listcloudtasks",
+   "allowGet": true,
+   "parameters": {
+    "cursor": {
+     "type": "string"
+    },
+    "limit": {
+     "type": "integer",
+     "format": "int32"
+    }
+   },
+   "returns": {
+    "$ref": "CollectionResponse_CloudTask"
+   }
+  },
+  "cloudtaskendpoint.removeCloudTask": {
+   "id": "cloudtaskendpoint.removeCloudTask",
+   "parameters": {
+    "id": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    }
+   },
+   "parameterOrder": [
+    "id"
+   ],
+   "returns": {
+    "$ref": "CloudTask"
+   }
+  },
+  "cloudtaskendpoint.updateCloudTask": {
+   "id": "cloudtaskendpoint.updateCloudTask",
+   "parameters": {
+    "resource": {
+     "$ref": "CloudTask"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "CloudTask"
+   }
+  }
+ }
+}

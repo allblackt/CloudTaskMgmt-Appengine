@@ -154,6 +154,7 @@ public class CloudUserEndpoint {
 				}
 			}
 			updateCloudUser(user);
+			System.out.println("saved user" + user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.put("status", "NOTOK");

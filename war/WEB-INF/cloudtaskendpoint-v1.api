@@ -24,21 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "cloudtaskendpoint.updateCloudTask" : {
-      "path" : "updatecloudtask",
-      "httpMethod" : "POST",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.updateCloudTask",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "cloudtaskendpoint.getusertasks" : {
       "path" : "getusertasks/{userid}/{projectid}",
       "httpMethod" : "GET",
@@ -58,6 +43,21 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.updateCloudTask" : {
+      "path" : "updatecloudtask",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.updateCloudTask",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -98,26 +98,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "cloudtaskendpoint.getcloudtask" : {
-      "path" : "getcloudtask",
-      "httpMethod" : "GET",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "cloudtaskendpoint.listcloudtasks" : {
       "path" : "listcloudtasks",
       "httpMethod" : "GET",
@@ -134,6 +114,26 @@
           "limit" : {
             "type" : "int32",
             "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudtaskendpoint.getcloudtask" : {
+      "path" : "getcloudtask",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
           }
         },
         "body" : "empty"
@@ -271,17 +271,17 @@
       }
     },
     "methods" : {
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.getUserTasks" : {
+        "response" : {
+          "$ref" : "CloudTaskCollection"
+        }
+      },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.updateCloudTask" : {
         "request" : {
           "$ref" : "CloudTask"
         },
         "response" : {
           "$ref" : "CloudTask"
-        }
-      },
-      "com.tudor.ctm.endpoint.CloudTaskEndpoint.getUserTasks" : {
-        "response" : {
-          "$ref" : "CloudTaskCollection"
         }
       },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.getProjectTasks" : {
@@ -297,14 +297,14 @@
           "$ref" : "CloudTask"
         }
       },
-      "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask" : {
-        "response" : {
-          "$ref" : "CloudTask"
-        }
-      },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
         "response" : {
           "$ref" : "CollectionResponse_CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask" : {
+        "response" : {
+          "$ref" : "CloudTask"
         }
       },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.insertCloudTask" : {

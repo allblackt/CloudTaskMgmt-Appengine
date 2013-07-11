@@ -17,6 +17,7 @@ import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.tudor.ctm.ui.server.NotificationManager;
 import com.tudor.ctm.ui.shared.CloudProject;
 import com.tudor.ctm.ui.shared.CloudTask;
 import com.tudor.ctm.ui.shared.CloudUser;
@@ -190,6 +191,7 @@ public class CloudTaskEndpoint {
 			}
 			mgr.setDetachAllOnCommit(true);
 			mgr.makePersistent(cloudtask);
+			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
 		} finally {
 			log.info("Exiting");
 		}
