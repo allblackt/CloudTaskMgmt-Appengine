@@ -27,6 +27,7 @@ public class TaskDisplay extends Composite {
 	@UiField TextArea taskDescription;
 	@UiField DateBox dueDate;
 	@UiField IntegerBox timeRemaining;
+	@UiField IntegerBox timeTotal;
 	@UiField ListBox taskOwner;
 	@UiField Hidden taskId;
 	@UiField Button btnSaveTask;
@@ -61,6 +62,7 @@ public class TaskDisplay extends Composite {
 		taskId.setValue(task.getId().toString());
 		dueDate.setValue(task.getTaskDueDate());
 		timeRemaining.setValue(task.getRemainingTime());
+		timeTotal.setValue(task.getTotalTime());
 		for(int i=0; i < taskOwner.getItemCount(); i++) {
 			if(task.getOwner().getEmail().compareToIgnoreCase(taskOwner.getValue(i)) == 0) {
 				taskOwner.setSelectedIndex(i);
@@ -89,6 +91,7 @@ public class TaskDisplay extends Composite {
 			.taskDescription(taskDescription.getValue().trim())
 			.taskTitle(taskTitle.getValue().trim())
 			.remainingTime(timeRemaining.getValue())
+			.totalTime(timeTotal.getValue())
 			.taskDueDate(dueDate.getValue())
 			.project(project)
 			.owner(owner)
@@ -104,7 +107,7 @@ public class TaskDisplay extends Composite {
 	}
 	
 	public String getErrorMessage() {
-		return errorMessage.trim();
+		return errorMessage != null ? errorMessage.trim() : "null";
 	}
 
 	private boolean isValid() {
@@ -130,6 +133,16 @@ public class TaskDisplay extends Composite {
 		if(timeRemaining.getValue() == null || timeRemaining.getValue() < 0) {
 			isValid = false;
 			errorMessage += " Time remaining must be a numerical value of at least 0!";
+		}
+		
+		//being the last check, I can check for isValid
+		if( timeTotal.getValue() == null || timeTotal.getValue() < 0) {
+			if(isValid && timeRemaining.getValue() == 0) {
+				isValid = false;
+				errorMessage += " Total time must be a numerical value of at least 0!";
+			} else {
+				timeTotal.setValue(0);
+			}
 		}
 		if(isValid) {
 			errorMessage = null;

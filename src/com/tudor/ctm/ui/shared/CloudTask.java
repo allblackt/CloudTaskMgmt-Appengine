@@ -21,16 +21,20 @@ public class CloudTask implements Serializable {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
 	@Persistent
-	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
+	@Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
 	private String taskTitle;
 	@Persistent
-	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
+	@Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
 	private String taskDescription;
 	private Date taskDueDate;
 	@Persistent
-	@Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
+	@Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
 	private int remainingTime;
-	
+
+	@Persistent
+	@Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+	private int totalTime;
+
 	@Persistent(defaultFetchGroup = "true")
 	@Unowned
 	private CloudUser owner;
@@ -98,11 +102,19 @@ public class CloudTask implements Serializable {
 		this.remainingTime = remainingTime;
 	}
 
+	public int getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(int totalTime) {
+		this.totalTime = totalTime;
+	}
+
 	@Override
 	public String toString() {
 		return "CloudTask [taskTitle=" + taskTitle + ", taskDescription="
 				+ taskDescription + ", taskDueDate=" + taskDueDate + ", owner="
-				+ owner + ", project="+ project +"]";
+				+ owner + ", project=" + project + "]";
 	}
 
 	public CloudProject getProject() {
@@ -119,6 +131,7 @@ public class CloudTask implements Serializable {
 		private String taskDescription;
 		private Date taskDueDate;
 		private int remainingTime;
+		private int totalTime;
 		private CloudUser owner;
 		private CloudProject project;
 
@@ -147,6 +160,11 @@ public class CloudTask implements Serializable {
 			return this;
 		}
 
+		public Builder totalTime(int totalTime) {
+			this.totalTime = totalTime;
+			return this;
+		}
+
 		public Builder owner(CloudUser owner) {
 			this.owner = owner;
 			return this;
@@ -168,6 +186,7 @@ public class CloudTask implements Serializable {
 		this.taskDescription = builder.taskDescription;
 		this.taskDueDate = builder.taskDueDate;
 		this.remainingTime = builder.remainingTime;
+		this.totalTime = builder.totalTime;
 		this.owner = builder.owner;
 		this.project = builder.project;
 	}

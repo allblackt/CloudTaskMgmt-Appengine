@@ -6,7 +6,7 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<g:Hidden name="Hidden name" ui:field="taskId"/>
-		<g:HTMLPanel width="517px" height="332px">
+		<g:HTMLPanel width="517px" height="348px">
 					<table>
 						<tr>
 							<td>Task Title</td>
@@ -39,6 +39,12 @@
 							<td>Work hours remaining</td>
 							<td>
 								<g:IntegerBox ui:field="timeRemaining"></g:IntegerBox>
+							</td>
+						</tr>
+						<tr>
+							<td>Work hours total</td>
+							<td>
+								<g:IntegerBox ui:field="timeTotal"></g:IntegerBox>
 							</td>
 						</tr>
 						<tr>

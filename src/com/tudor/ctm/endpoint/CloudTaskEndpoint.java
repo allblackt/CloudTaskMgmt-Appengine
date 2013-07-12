@@ -192,6 +192,7 @@ public class CloudTaskEndpoint {
 			mgr.setDetachAllOnCommit(true);
 			mgr.makePersistent(cloudtask);
 			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
+			NotificationManager.sendNewTaskEmailNotification(cloudtask);
 		} finally {
 			log.info("Exiting");
 		}
