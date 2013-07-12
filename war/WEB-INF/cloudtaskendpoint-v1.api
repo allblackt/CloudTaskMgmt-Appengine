@@ -98,6 +98,26 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "cloudtaskendpoint.getcloudtask" : {
+      "path" : "getcloudtask",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "cloudtaskendpoint.listcloudtasks" : {
       "path" : "listcloudtasks",
       "httpMethod" : "GET",
@@ -114,26 +134,6 @@
           "limit" : {
             "type" : "int32",
             "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "cloudtaskendpoint.getcloudtask" : {
-      "path" : "getcloudtask",
-      "httpMethod" : "GET",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
           }
         },
         "body" : "empty"
@@ -179,6 +179,9 @@
             "format" : "date-time"
           },
           "remainingTime" : {
+            "type" : "integer"
+          },
+          "totalTime" : {
             "type" : "integer"
           },
           "owner" : {
@@ -297,14 +300,14 @@
           "$ref" : "CloudTask"
         }
       },
-      "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
-        "response" : {
-          "$ref" : "CollectionResponse_CloudTask"
-        }
-      },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.getCloudTask" : {
         "response" : {
           "$ref" : "CloudTask"
+        }
+      },
+      "com.tudor.ctm.endpoint.CloudTaskEndpoint.listCloudTask" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudTask"
         }
       },
       "com.tudor.ctm.endpoint.CloudTaskEndpoint.insertCloudTask" : {
