@@ -1,2 +1,5 @@
 # Module com.tudor.ctm
 # RPC service class, partial path of RPC policy file
+com.tudor.ctm.ui.client.ManageTaskService, F142E4C0BBB5994145D7DCA519320D13.gwt.rpc
+com.tudor.ctm.ui.client.ManageProject, B6038022313AE45103849488CA18FD74.gwt.rpc
+com.tudor.ctm.ui.client.GetUserData, 452AD93FCD6EC9F23527A92D7E829BCA.gwt.rpc

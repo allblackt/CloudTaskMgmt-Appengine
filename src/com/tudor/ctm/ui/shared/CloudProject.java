@@ -70,8 +70,13 @@ public class CloudProject implements Serializable {
 	
 	@Override
 	public String toString() {
+		try {
 		return "CloudProject [id=" + id + ", name=" + name + ", owner=" + owner.toString()
 				+ ", members=" + members.toString() + "]";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "CloudProject has an error...";
+		}
 	}
 	
 	

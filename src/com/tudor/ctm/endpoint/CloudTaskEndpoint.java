@@ -161,8 +161,24 @@ public class CloudTaskEndpoint {
 				throw new EntityExistsException("Object already exists");
 			}
 			mgr.setDetachAllOnCommit(true);
+			
+			if(cloudtask.getOwner() != null && cloudtask.getOwner().getId() != null) {
+				cloudtask.setOwner(mgr.getObjectById(CloudUser.class, cloudtask.getOwner().getId()));
+			} else {
+				log.warning("User is null or user id is null");
+				cloudtask.setOwner(null);
+			}
+			
+			if(cloudtask.getProject() != null || cloudtask.getProject().getId() != null) {
+				cloudtask.setProject(mgr.getObjectById(CloudProject.class, cloudtask.getProject().getId()));
+			} else {
+				log.warning("Project is null or Project id is null");
+				cloudtask.setProject(null);
+			}
 			mgr.makePersistent(cloudtask);
 			cloudtask = mgr.detachCopy(cloudtask);
+			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
+			NotificationManager.sendNewTaskEmailNotification(cloudtask);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 
@@ -190,6 +206,21 @@ public class CloudTaskEndpoint {
 				throw new EntityNotFoundException("Object does not exist");
 			}
 			mgr.setDetachAllOnCommit(true);
+			
+			if(cloudtask.getOwner() != null && cloudtask.getOwner().getId() != null) {
+				cloudtask.setOwner(mgr.getObjectById(CloudUser.class, cloudtask.getOwner().getId()));
+			} else {
+				log.warning("User is null or user id is null");
+				cloudtask.setOwner(null);
+			}
+			
+			if(cloudtask.getProject() != null || cloudtask.getProject().getId() != null) {
+				cloudtask.setProject(mgr.getObjectById(CloudProject.class, cloudtask.getProject().getId()));
+			} else {
+				log.warning("Project is null or Project id is null");
+				cloudtask.setProject(null);
+			}
+			
 			mgr.makePersistent(cloudtask);
 			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
 			NotificationManager.sendNewTaskEmailNotification(cloudtask);

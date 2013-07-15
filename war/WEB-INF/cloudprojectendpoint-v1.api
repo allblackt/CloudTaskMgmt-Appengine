@@ -54,26 +54,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "cloudprojectendpoint.getCloudProject" : {
-      "path" : "getcloudproject",
-      "httpMethod" : "GET",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "cloudprojectendpoint.listCloudProject" : {
       "path" : "cloudproject",
       "httpMethod" : "GET",
@@ -98,9 +78,49 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "cloudprojectendpoint.getCloudProject" : {
+      "path" : "getcloudproject",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "cloudprojectendpoint.getuserprojectsbyemail" : {
+      "path" : "getuserprojectsbyemail",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjectsByEmail",
+      "request" : {
+        "parameters" : {
+          "email" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "cloudprojectendpoint.getuserprojects" : {
       "path" : "getuserprojects",
-      "httpMethod" : "GET",
+      "httpMethod" : "POST",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
@@ -214,14 +234,19 @@
           "$ref" : "CloudProject"
         }
       },
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudProject"
+        }
+      },
       "com.tudor.ctm.endpoint.CloudProjectEndpoint.getCloudProject" : {
         "response" : {
           "$ref" : "CloudProject"
         }
       },
-      "com.tudor.ctm.endpoint.CloudProjectEndpoint.listCloudProject" : {
+      "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjectsByEmail" : {
         "response" : {
-          "$ref" : "CollectionResponse_CloudProject"
+          "$ref" : "CloudProjectCollection"
         }
       },
       "com.tudor.ctm.endpoint.CloudProjectEndpoint.getUserProjects" : {

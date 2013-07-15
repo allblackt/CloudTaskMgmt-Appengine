@@ -94,7 +94,7 @@ public class CloudProjectEndpoint {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name="getuserprojects", path="getuserprojects", httpMethod=HttpMethod.GET)
+	@ApiMethod(name="getuserprojects", path="getuserprojects", httpMethod=HttpMethod.POST)
 	public List<CloudProject> getUserProjects(CloudUser user) {
 		List<CloudProject> projects = null;
 		PersistenceManager mgr = null;
@@ -105,6 +105,29 @@ public class CloudProjectEndpoint {
 			q.setFilter("members.contains(usr) && usr.id==:userId");
 			q.declareVariables(CloudUser.class.getName() +  " usr");
 			projects = (List<CloudProject>) q.execute(user.getId());
+			projects = (List<CloudProject>) mgr.detachCopyAll(projects);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			mgr.close();
+		}
+		return projects;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name="getuserprojectsbyemail", path="getuserprojectsbyemail", httpMethod=HttpMethod.GET)
+	public List<CloudProject> getUserProjectsByEmail(@Named("email") String email) {
+		List<CloudProject> projects = null;
+		//CloudUser user = null;
+		PersistenceManager mgr = null;
+		try {
+//			user = new CloudUserEndpoint().getCloudUserByEmail(email);
+//			System.out.println(user.toString());
+			mgr = getPersistenceManager();
+			Query q = mgr.newQuery(CloudProject.class);
+			q.setFilter("members.contains(usr) && usr.email==:email");
+			q.declareVariables(CloudUser.class.getName() +  " usr");
+			projects = (List<CloudProject>) q.execute(email);
 			projects = (List<CloudProject>) mgr.detachCopyAll(projects);
 		} catch (Exception e) {
 			e.printStackTrace();

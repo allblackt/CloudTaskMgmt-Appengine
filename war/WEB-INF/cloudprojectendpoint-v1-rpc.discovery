@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/C-c8YF-H8kgADkj3x2mfwqPT4Qk\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/lCjrlvbWokIdQbAfY4-rF3RjD7A\"",
  "discoveryVersion": "v1",
  "id": "cloudprojectendpoint:v1",
  "name": "cloudprojectendpoint",
@@ -163,7 +163,6 @@
   },
   "cloudprojectendpoint.getuserprojects": {
    "id": "cloudprojectendpoint.getuserprojects",
-   "allowGet": true,
    "parameters": {
     "resource": {
      "$ref": "CloudUser"
@@ -171,6 +170,22 @@
    },
    "parameterOrder": [
     "resource"
+   ],
+   "returns": {
+    "$ref": "CloudProjectCollection"
+   }
+  },
+  "cloudprojectendpoint.getuserprojectsbyemail": {
+   "id": "cloudprojectendpoint.getuserprojectsbyemail",
+   "allowGet": true,
+   "parameters": {
+    "email": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "email"
    ],
    "returns": {
     "$ref": "CloudProjectCollection"

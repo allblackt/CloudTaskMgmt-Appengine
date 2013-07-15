@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/8W_ayXddXyWAxnz-LXmvRcOU0yo\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/WVOx4mJrmMfqLi8aR7gnBK34AMI\"",
  "discoveryVersion": "v1",
  "id": "cloudtaskendpoint:v1",
  "name": "cloudtaskendpoint",
@@ -113,6 +113,10 @@
     },
     "taskTitle": {
      "type": "string"
+    },
+    "totalTime": {
+     "type": "integer",
+     "format": "int32"
     }
    }
   },

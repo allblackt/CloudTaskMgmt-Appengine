@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/C-c8YF-H8kgADkj3x2mfwqPT4Qk\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/lCjrlvbWokIdQbAfY4-rF3RjD7A\"",
  "discoveryVersion": "v1",
  "id": "cloudprojectendpoint:v1",
  "name": "cloudprojectendpoint",
@@ -168,11 +168,29 @@
   "getuserprojects": {
    "id": "cloudprojectendpoint.getuserprojects",
    "path": "getuserprojects",
-   "httpMethod": "GET",
+   "httpMethod": "POST",
    "request": {
     "$ref": "CloudUser",
     "parameterName": "resource"
    },
+   "response": {
+    "$ref": "CloudProjectCollection"
+   }
+  },
+  "getuserprojectsbyemail": {
+   "id": "cloudprojectendpoint.getuserprojectsbyemail",
+   "path": "getuserprojectsbyemail",
+   "httpMethod": "GET",
+   "parameters": {
+    "email": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "email"
+   ],
    "response": {
     "$ref": "CloudProjectCollection"
    }

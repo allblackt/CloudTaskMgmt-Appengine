@@ -43,7 +43,7 @@ public class NotificationManager {
 			for(int i=0; i < results.getResults().size() ; i++ ) {
 				Result result = results.getResults().get(i);
 				String regId = user.getDeviceKeys().get(i);
-				if(result != null) {
+				if(result.getErrorCodeName() != null) {
 					invalidKeys.add(user.getDeviceKeys().get(i));
 				}
 				String messageId = result.getMessageId();
