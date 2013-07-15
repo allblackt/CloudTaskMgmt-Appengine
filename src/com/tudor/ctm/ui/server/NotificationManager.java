@@ -53,7 +53,7 @@ public class NotificationManager {
 			}
 			results = sender.send(message, user.getDeviceKeys(), 1);
 			
-			List<String> invalidKeys = new ArrayList<>();
+			List<String> invalidKeys = new ArrayList<String>();
 			
 			//validate results and remove invalid registration IDs
 			for(int i=0; i < results.getResults().size() ; i++ ) {
