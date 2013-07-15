@@ -93,21 +93,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "clouduserendpoint.insertCloudUser" : {
-      "path" : "insertclouduser",
-      "httpMethod" : "POST",
-      "scopes" : [ ],
-      "audiences" : [ ],
-      "clientIds" : [ ],
-      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.insertCloudUser",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "clouduserendpoint.listCloudUser" : {
       "path" : "clouduser",
       "httpMethod" : "GET",
@@ -127,6 +112,21 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "clouduserendpoint.insertCloudUser" : {
+      "path" : "insertclouduser",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tudor.ctm.endpoint.CloudUserEndpoint.insertCloudUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -246,17 +246,17 @@
           "$ref" : "CloudUser"
         }
       },
+      "com.tudor.ctm.endpoint.CloudUserEndpoint.listCloudUser" : {
+        "response" : {
+          "$ref" : "CollectionResponse_CloudUser"
+        }
+      },
       "com.tudor.ctm.endpoint.CloudUserEndpoint.insertCloudUser" : {
         "request" : {
           "$ref" : "CloudUser"
         },
         "response" : {
           "$ref" : "CloudUser"
-        }
-      },
-      "com.tudor.ctm.endpoint.CloudUserEndpoint.listCloudUser" : {
-        "response" : {
-          "$ref" : "CollectionResponse_CloudUser"
         }
       },
       "com.tudor.ctm.endpoint.CloudUserEndpoint.registerDeviceForUser" : {

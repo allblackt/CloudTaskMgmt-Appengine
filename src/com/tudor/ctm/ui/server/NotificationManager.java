@@ -13,6 +13,9 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.tudor.ctm.endpoint.CloudTaskEndpoint;
 import com.tudor.ctm.endpoint.CloudUserEndpoint;
 import com.tudor.ctm.ui.shared.CloudProject;
@@ -23,6 +26,19 @@ import com.tudor.ctm.util.Constants;
 public class NotificationManager {
 	
 	private static Logger log = Logger.getLogger( NotificationManager.class.getName() );
+	
+	
+	public static void queueTaskForNotification(CloudTask task) {
+		NotificationTask nt = new NotificationTask(task);
+		Queue queue = QueueFactory.getQueue("notificationpush-queue");
+		queue.add(TaskOptions.Builder.withPayload(nt));
+	}
+	
+	public static void queueProjectForReport(CloudProject project) {
+		NotificationTask nt = new NotificationTask(project);
+		Queue queue = QueueFactory.getQueue("notificationpush-queue");
+		queue.add(TaskOptions.Builder.withPayload(nt));
+	}
 	
 	public static void sendNewTaskAndroidNotification(CloudUser user) {
 		Sender sender = new Sender(Constants.GCM_API_KEY);
@@ -101,7 +117,7 @@ public class NotificationManager {
 			emailBody.append("<hr />");
 		}
 		
-		emailBody.append("Generated on" + new Date());
+		emailBody.append("Generated on " + new Date() + " by CTM-Tudor");
 		
 		try {
 			new EmailNotification.Builder().emailBody(emailBody.toString()).emailSubject(emailSubject).to(new InternetAddress(project.getOwner().getEmail())).build().send();

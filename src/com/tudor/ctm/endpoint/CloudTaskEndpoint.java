@@ -177,8 +177,7 @@ public class CloudTaskEndpoint {
 			}
 			mgr.makePersistent(cloudtask);
 			cloudtask = mgr.detachCopy(cloudtask);
-			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
-			NotificationManager.sendNewTaskEmailNotification(cloudtask);
+			NotificationManager.queueTaskForNotification(cloudtask);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 
@@ -222,8 +221,7 @@ public class CloudTaskEndpoint {
 			}
 			
 			mgr.makePersistent(cloudtask);
-			NotificationManager.sendNewTaskAndroidNotification(cloudtask.getOwner());
-			NotificationManager.sendNewTaskEmailNotification(cloudtask);
+			NotificationManager.queueTaskForNotification(cloudtask);
 		} finally {
 			log.info("Exiting");
 		}
