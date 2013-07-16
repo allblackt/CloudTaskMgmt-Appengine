@@ -186,6 +186,9 @@ public class CloudUserEndpoint {
 				clouduser = existing;
 			} else { 
 				System.out.println("new user" + clouduser);
+				if(clouduser.getName() == null || clouduser.getName().length() == 0) {
+					clouduser.setName(clouduser.getEmail());
+				}
 				mgr.makePersistent(clouduser);
 				tx.commit();
 			}

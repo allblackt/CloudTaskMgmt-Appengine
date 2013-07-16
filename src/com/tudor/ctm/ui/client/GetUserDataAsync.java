@@ -13,4 +13,6 @@ public interface GetUserDataAsync {
 
 	void getUserProjects(CloudUser user,
 			AsyncCallback<List<CloudProject>> callback);
+
+	void saveUser(CloudUser user, AsyncCallback<Void> callback);
 }

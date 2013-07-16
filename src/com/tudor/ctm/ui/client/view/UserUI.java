@@ -57,7 +57,7 @@ public class UserUI extends Composite{
 		    sb.appendHtmlConstant("<td style='font-size:95%;'>");
 		    sb.appendEscaped(value.getName());
 		    sb.appendHtmlConstant("</td></tr><tr><td>");
-		    sb.appendEscaped(value.getOwner().getEmail());
+		    sb.appendEscaped(value.getOwner().getName() + " (" + value.getOwner().getEmail() + ")");
 		    sb.appendHtmlConstant("</td></tr></table>");
 		}
 	});

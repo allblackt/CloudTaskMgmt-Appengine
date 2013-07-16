@@ -7,6 +7,12 @@
 	<g:HTMLPanel ui:field="cbAdmin">
 		<g:Grid>
 			<g:row>
+				<g:cell>Pick User</g:cell>
+				<g:customCell>
+					<g:ListBox ui:field="lstUsers" width="169px"/>
+				</g:customCell>
+			</g:row>
+			<g:row>
 				<g:customCell>
 					<g:Label text="Name"/>
 				</g:customCell>
@@ -27,7 +33,7 @@
 					<g:Label text="Admin"/>
 				</g:customCell>
 				<g:customCell>
-					<g:SimpleCheckBox/>
+					<g:SimpleCheckBox ui:field="checkAdmin"/>
 				</g:customCell>
 			</g:row>
 			<g:row>

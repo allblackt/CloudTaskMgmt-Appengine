@@ -12,4 +12,5 @@ public interface GetUserData extends RemoteService {
 	CloudUser getUserData(String URL);
 	List<CloudUser> getAllUsers();
 	List<CloudProject> getUserProjects(CloudUser user);
+	void saveUser(CloudUser user);
 }

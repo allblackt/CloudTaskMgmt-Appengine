@@ -53,4 +53,9 @@ public class GetUserDataImpl extends RemoteServiceServlet implements
 		return new CloudProjectEndpoint().getUserProjects(user);
 	}
 
+	@Override
+	public void saveUser(CloudUser user) {
+		new CloudUserEndpoint().updateCloudUser(user);
+	}
+
 }

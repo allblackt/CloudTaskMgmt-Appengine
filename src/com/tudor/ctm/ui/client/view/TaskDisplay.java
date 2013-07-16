@@ -46,7 +46,7 @@ public class TaskDisplay extends Composite {
 		dueDate.setValue(new Date());
 		this.project = project;
 		for (CloudUser user : project.getMembers()) {
-			taskOwner.addItem(user.getEmail(), user.getEmail());
+			taskOwner.addItem(user.getName(), user.getEmail());
 		}
 		btnDelete.setVisible(false);
 	}
@@ -102,7 +102,7 @@ public class TaskDisplay extends Composite {
 		System.out.println("forcing owner" + user);
 		if(project.getMembers().contains(user)) {
 			taskOwner.clear();
-			taskOwner.addItem(user.getEmail(), user.getEmail());
+			taskOwner.addItem(user.getName(), user.getEmail());
 		}
 	}
 	

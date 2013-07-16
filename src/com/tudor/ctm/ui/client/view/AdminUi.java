@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -50,6 +51,7 @@ public class AdminUi extends Composite {
 	ListBox members;
 	@UiField Button btnSave;
 	@UiField Button btnAddProject;
+	@UiField Button btnEditUsers;
 	
 	
 	private static AdminUiUiBinder uiBinder = GWT.create(AdminUiUiBinder.class);
@@ -58,6 +60,7 @@ public class AdminUi extends Composite {
 	private CellTable<CloudProject> table;
 	private CloudUser user;
 	private List<CloudUser> allUsers;
+	private CloudProject selectedProject;
 	
 	@UiTemplate("AdminUi.ui.xml")
 	interface AdminUiUiBinder extends UiBinder<Widget, AdminUi> {
@@ -65,8 +68,6 @@ public class AdminUi extends Composite {
 
 	public AdminUi(CloudUser user) {
 		initWidget(uiBinder.createAndBindUi(this));
-		
-		//tabPanel.selectTab(0);
 		
 		this.user = user;
 		
@@ -85,11 +86,9 @@ public class AdminUi extends Composite {
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				selectedProject = selectionModel.getSelectedObject();
 				setOptions();
-				for (CloudUser member : selectionModel.getSelectedObject().getMembers()) {
-					members.setItemSelected(allUsers.indexOf(member), true);
-				}
-				coordinator.setSelectedIndex(allUsers.indexOf(selectionModel.getSelectedObject().getOwner()));
+				setSelections();
 			}
 		});
 		
@@ -115,7 +114,6 @@ public class AdminUi extends Composite {
 				} else {
 					nameCell.clearViewData(KEY_PROVIDER.getKey(object));
 					new MessageBox("The project name you provided is invalid. A project with the same name already exists.").center();
-					
 				}
 				table.redraw();
 			}
@@ -170,9 +168,16 @@ public class AdminUi extends Composite {
 		members.clear();
 		coordinator.clear();
 		for (CloudUser user : allUsers) {
-			members.addItem(user.getEmail());
-			coordinator.addItem(user.getEmail());
+			members.addItem(user.getName() ,user.getEmail());
+			coordinator.addItem(user.getName(), user.getEmail());
 		}
+	}
+	
+	private void setSelections() {
+		for (CloudUser member : selectedProject.getMembers()) {
+			members.setItemSelected(allUsers.indexOf(member), true);
+		}
+		coordinator.setSelectedIndex(allUsers.indexOf(selectedProject.getOwner()));
 	}
 	
 	private boolean isProjectNameValid(String name, int max) {
@@ -256,5 +261,50 @@ public class AdminUi extends Composite {
 				new MessageBox("Project saved.").center();
 			}
 		});
+	}
+	
+	@UiHandler("btnEditUsers") void onBtnEditUsers(ClickEvent event) {
+		final DialogBox box = new DialogBox();
+		final AddUserUi editUsers = new AddUserUi(allUsers);
+		editUsers.btnCancel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				box.hide();
+			}
+		});
+		
+		editUsers.btnSave.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(editUsers.isValid()) {
+					userData.saveUser(editUsers.getUpdatedUser(), new AsyncCallback<Void>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							new MessageBox(caught.getMessage()).center();
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							new MessageBox("User saved!").center();
+							displayProjects();
+							new Timer() {
+								@Override
+								public void run() {
+									setSelections();
+									box.hide();
+								}
+							}.schedule(2000);
+						}
+					});
+				}
+			}
+		});
+		
+		box.add(editUsers);
+		box.setGlassEnabled(true);
+		
+		box.center();
 	}
 }
